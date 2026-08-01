@@ -7,6 +7,22 @@ import { CostTable } from './components/CostTable'
 import { InputSection } from './components/InputSection'
 import { ChartTabs } from './components/ChartTabs'
 import { SensitivityStrip } from './components/SensitivityStrip'
+import { buildWorkbook } from './lib/xlsx-export'
+
+const exportBtnClass =
+  'rounded-lg border border-surface-rule bg-surface-panel px-4 py-2 text-sm font-medium text-ink-primary hover:bg-surface-base focus:outline-none focus:ring-1 focus:ring-accent'
+
+function downloadWorkbook(data: ArrayBuffer, filename: string): void {
+  const blob = new Blob([data], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
 export default function App() {
   const {
@@ -19,6 +35,12 @@ export default function App() {
     updateShared,
     updateTax,
   } = useScenario()
+
+  function handleExportClick() {
+    const data = buildWorkbook(result)
+    const today = new Date().toISOString().slice(0, 10)
+    downloadWorkbook(data, `rent-vs-buy-export-${today}.xlsx`)
+  }
 
   return (
     <>
@@ -87,6 +109,11 @@ export default function App() {
           </div>
           {/* DebugPanel — hidden; sidelined until further notice */}
           {/* <DebugPanel result={result} /> */}
+        </div>
+        <div className="mt-6">
+          <button type="button" onClick={handleExportClick} className={exportBtnClass}>
+            Export Data
+          </button>
         </div>
       </main>
     </>
