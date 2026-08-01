@@ -21,7 +21,7 @@ describe('ChartTabs', () => {
 
     expect(screen.getAllByRole('slider', { name: /chart horizon/i })).toHaveLength(1)
 
-    fireEvent.click(screen.getByRole('tab', { name: 'Costs Over Time' }))
+    fireEvent.click(screen.getByRole('tab', { name: 'Annual Costs' }))
     expect(screen.getAllByRole('slider', { name: /chart horizon/i })).toHaveLength(1)
 
     const slider = screen.getByRole('slider', { name: /chart horizon/i })

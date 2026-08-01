@@ -15,7 +15,7 @@ A client-side TypeScript web app that computes a credible, side-by-side financia
 - Optional inflation adjustment — display figures in today's dollars without changing the underlying model
 - Variable analysis horizon (1–40 years)
 - Year-over-year escalation of all costs (rent, HOA, maintenance, insurance, utilities)
-- Net Worth, Costs Over Time, and Monthly Costs charts, plus a sensitivity strip showing ±1pp impact of key rates
+- Net Worth, Annual Costs, and Monthly Costs charts, plus a sensitivity strip showing ±1pp impact of key rates
 
 ## Model assumptions and limitations
 

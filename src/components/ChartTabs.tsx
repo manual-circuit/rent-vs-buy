@@ -19,7 +19,7 @@ export function ChartTabs({ result, updateShared }: ChartTabsProps) {
           { id: 'net-worth', label: 'Net Worth', content: <NetWorthChartBody result={result} /> },
           {
             id: 'costs',
-            label: 'Costs Over Time',
+            label: 'Annual Costs',
             content: <CostsOverTimeChart result={result} />,
           },
           {
