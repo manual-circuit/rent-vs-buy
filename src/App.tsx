@@ -85,8 +85,6 @@ export default function App() {
             <SensitivityStrip input={input} result={result} />
             <CostTable result={result} />
           </div>
-          {/* ExportPanel — hidden pending PII disclosure design (Tier 3 decision) */}
-          {/* <ExportPanel result={result} input={input} onImport={replaceInput} /> */}
           {/* DebugPanel — hidden; sidelined until further notice */}
           {/* <DebugPanel result={result} /> */}
         </div>
