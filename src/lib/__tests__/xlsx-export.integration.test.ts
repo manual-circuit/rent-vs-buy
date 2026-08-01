@@ -11,6 +11,11 @@ import type { ScenarioInput } from '../../engine'
 // displayed values against the exported Summary sheet, for representative scenarios. Individually
 // passing unit tests in xlsx-export.test.ts don't prove the export actually matches what a user
 // sees on screen — this bridges both code paths independently.
+//
+// The Summary sheet carries penny precision (post-correction: raw whole-dollar Math.round was too
+// coarse per user feedback) while CostTable's on-screen formatCurrency still rounds to whole dollars
+// for display. So the check here is "the exported penny value rounds to the same whole dollar as
+// on-screen," not raw equality — a deliberate, expected divergence, not a bug.
 
 function parseCurrencyCell(text: string): number | null {
   if (text === '—') return null
@@ -52,8 +57,14 @@ function checkScenarioMatchesExport(input: ScenarioInput) {
     const ownerValue = parseCurrencyCell(ownerText)
     const renterValue = parseCurrencyCell(renterText)
 
-    expect(exportedRow[0]).toBe(ownerValue === null ? '' : ownerValue)
-    expect(exportedRow[1]).toBe(renterValue === null ? '' : renterValue)
+    const exportedOwner = exportedRow[0]
+    const exportedRenter = exportedRow[1]
+    expect(typeof exportedOwner === 'number' ? Math.round(exportedOwner) : exportedOwner).toBe(
+      ownerValue === null ? '' : ownerValue,
+    )
+    expect(typeof exportedRenter === 'number' ? Math.round(exportedRenter) : exportedRenter).toBe(
+      renterValue === null ? '' : renterValue,
+    )
   }
 
   unmount()

@@ -10,7 +10,7 @@ import { SensitivityStrip } from './components/SensitivityStrip'
 import { buildWorkbook } from './lib/xlsx-export'
 
 const exportBtnClass =
-  'rounded-lg border border-surface-rule bg-surface-panel px-4 py-2 text-sm font-medium text-ink-primary hover:bg-surface-base focus:outline-none focus:ring-1 focus:ring-accent'
+  'w-full rounded-lg border border-surface-rule bg-surface-panel px-4 py-2 text-center text-sm font-medium text-ink-primary hover:bg-surface-base focus:outline-none focus:ring-1 focus:ring-accent'
 
 function downloadWorkbook(data: ArrayBuffer, filename: string): void {
   const blob = new Blob([data], {

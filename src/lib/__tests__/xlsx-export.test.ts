@@ -124,7 +124,7 @@ describe('buildWorkbook', () => {
 
     const lastEngineRow = result.monthly_schedule[result.monthly_schedule.length - 1]
     const lastSheetRow = dataRows[dataRows.length - 1]
-    expect(lastSheetRow?.[7]).toBeCloseTo(lastEngineRow?.remaining_loan_balance ?? NaN, 6)
+    expect(lastSheetRow?.[7]).toBeCloseTo(lastEngineRow?.remaining_loan_balance ?? NaN, 2)
   })
 
   it('S20-8: PMI payment is nonzero early and exactly 0 once remaining balance crosses the 80% threshold', () => {
@@ -163,7 +163,7 @@ describe('buildWorkbook', () => {
     if (!targetRow) throw new Error('expected yearly_summary[4]')
     const expectedOwner = deflateIfEnabled(targetRow.owner_net_worth, true, 0.03, targetRow.year)
     const sheetRow = dataRows.find((r) => r[0] === targetRow.year)
-    expect(sheetRow?.[1]).toBeCloseTo(expectedOwner, 6)
+    expect(sheetRow?.[1]).toBeCloseTo(expectedOwner, 2)
   })
 
   it('S20-10: Annual Costs sheet matches hand-computed deflation for a real_dollars scenario', () => {
@@ -184,7 +184,7 @@ describe('buildWorkbook', () => {
       targetRow.year,
     )
     const sheetRow = dataRows.find((r) => r[0] === targetRow.year)
-    expect(sheetRow?.[2]).toBeCloseTo(expectedRenter, 6)
+    expect(sheetRow?.[2]).toBeCloseTo(expectedRenter, 2)
   })
 
   it('S20-11: Monthly Costs sheet divides by 12 before deflating, matching the live chart', () => {
@@ -205,7 +205,7 @@ describe('buildWorkbook', () => {
       targetRow.year,
     )
     const sheetRow = dataRows.find((r) => r[0] === targetRow.year)
-    expect(sheetRow?.[1]).toBeCloseTo(expectedOwner, 6)
+    expect(sheetRow?.[1]).toBeCloseTo(expectedOwner, 2)
   })
 
   it('S20-12: Inputs sheet contains one row per set input field, with form-style labels', () => {

@@ -31,11 +31,17 @@ function yesNo(value: boolean): string {
   return value ? 'Yes' : 'No'
 }
 
-// Matches CostTable.tsx's formatCurrency rounding (maximumFractionDigits: 0) so exported Summary
-// values match the on-screen table exactly, cell for cell, while remaining a real number (not a
-// formatted string) so the sheet stays usable for further spreadsheet math.
+// USD values are rounded to the nearest penny throughout the workbook — raw engine floats (e.g.
+// 375.13749459227574) are not acceptable output. Applied to every dollar-denominated cell in every
+// sheet (Summary, Amortization, the three chart sheets, and the Inputs sheet's dollar-valued fields).
 function roundCurrency(value: number): number {
-  return Math.round(value)
+  return Math.round(value * 100) / 100
+}
+
+// Interest rates get 3 decimal places instead of 2 — applied only to ownership.interest_rate and
+// ownership.refinance_new_interest_rate in the Inputs sheet, not to other percentage/rate fields.
+function roundRate(value: number): number {
+  return Math.round(value * 1000) / 1000
 }
 
 function buildSummarySheet(result: ScenarioResult): XLSX.WorkSheet {
@@ -136,12 +142,12 @@ function buildAmortizationSheet(result: ScenarioResult): XLSX.WorkSheet {
   const rows = result.monthly_schedule.map((row) => [
     row.month_index,
     row.year_index,
-    row.principal_payment,
-    row.interest_payment,
-    row.pmi_payment,
-    row.property_tax,
-    row.homeowner_insurance,
-    row.remaining_loan_balance,
+    roundCurrency(row.principal_payment),
+    roundCurrency(row.interest_payment),
+    roundCurrency(row.pmi_payment),
+    roundCurrency(row.property_tax),
+    roundCurrency(row.homeowner_insurance),
+    roundCurrency(row.remaining_loan_balance),
   ])
   return XLSX.utils.aoa_to_sheet([header, ...rows])
 }
@@ -154,8 +160,8 @@ function buildChartSheet(
   const { real_dollars, inflation_rate } = result.inputs.shared
   const rows = result.yearly_summary.map((row) => [
     row.year,
-    deflateIfEnabled(ownerField(row), real_dollars, inflation_rate, row.year),
-    deflateIfEnabled(renterField(row), real_dollars, inflation_rate, row.year),
+    roundCurrency(deflateIfEnabled(ownerField(row), real_dollars, inflation_rate, row.year)),
+    roundCurrency(deflateIfEnabled(renterField(row), real_dollars, inflation_rate, row.year)),
   ])
   return XLSX.utils.aoa_to_sheet([['Year', 'Buying', 'Renting'], ...rows])
 }
@@ -164,15 +170,15 @@ function buildInputsSheet(result: ScenarioResult): XLSX.WorkSheet {
   const { ownership, rental, shared, tax } = result.inputs
 
   const ownershipRows: [string, string | number][] = [
-    ['Purchase Price', ownership.purchase_price],
+    ['Purchase Price', roundCurrency(ownership.purchase_price)],
     ['Down Payment (%)', ownership.down_payment_pct],
-    ['Interest Rate (%/yr)', ownership.interest_rate],
+    ['Interest Rate (%/yr)', roundRate(ownership.interest_rate)],
     ['Loan Term (yrs)', ownership.loan_term_years],
     ['PMI Rate (%/yr)', ownership.pmi_rate],
     ['Property Tax Rate (%/yr)', ownership.real_estate_tax_rate],
-    ['Assessed Value', ownership.assessed_value],
-    ['Home Insurance (annual)', ownership.homeowner_insurance_annual],
-    ['HOA Fee (monthly)', ownership.hoa_monthly],
+    ['Assessed Value', roundCurrency(ownership.assessed_value)],
+    ['Home Insurance (annual)', roundCurrency(ownership.homeowner_insurance_annual)],
+    ['HOA Fee (monthly)', roundCurrency(ownership.hoa_monthly)],
     ['Home Size (sqft)', ownership.home_size_sqft],
     ['Closing Costs (%)', ownership.closing_costs_pct],
     ['Maintenance (%/yr)', ownership.maintenance_pct_annual],
@@ -183,26 +189,26 @@ function buildInputsSheet(result: ScenarioResult): XLSX.WorkSheet {
     ['Selling Cost (%)', ownership.selling_cost_pct],
     ['Enable Refinance', yesNo(ownership.refinance_enabled)],
     ['Refinance Trigger Month', ownership.refinance_trigger_month],
-    ['Refinance New Interest Rate (%/yr)', ownership.refinance_new_interest_rate],
+    ['Refinance New Interest Rate (%/yr)', roundRate(ownership.refinance_new_interest_rate)],
     ['Refinance New Loan Term (yrs)', ownership.refinance_new_loan_term_years],
     ['Refinance New Closing Costs (%)', ownership.refinance_closing_costs_pct],
   ]
 
   const rentalRows: [string, string | number][] = [
-    ['Monthly Rent', rental.base_rent_monthly],
-    ['Pet Rent (monthly)', rental.pet_rent_monthly],
-    ['Parking Fee (monthly)', rental.parking_fee_monthly],
-    ['Renters Insurance (monthly)', rental.renters_insurance_monthly],
-    ['Admin Fee', rental.admin_fee],
-    ['Security Deposit', rental.security_deposit],
-    ['Pet Deposit', rental.pet_deposit],
+    ['Monthly Rent', roundCurrency(rental.base_rent_monthly)],
+    ['Pet Rent (monthly)', roundCurrency(rental.pet_rent_monthly)],
+    ['Parking Fee (monthly)', roundCurrency(rental.parking_fee_monthly)],
+    ['Renters Insurance (monthly)', roundCurrency(rental.renters_insurance_monthly)],
+    ['Admin Fee', roundCurrency(rental.admin_fee)],
+    ['Security Deposit', roundCurrency(rental.security_deposit)],
+    ['Pet Deposit', roundCurrency(rental.pet_deposit)],
     ['Rent Escalation (%/yr)', toPercent(rental.rent_increase_rate)],
     ['Pet Rent Escalation (%/yr)', toPercent(rental.pet_rent_increase_rate)],
     ['Parking Escalation (%/yr)', toPercent(rental.parking_increase_rate)],
   ]
 
   const sharedRows: [string, string | number][] = [
-    ['Utilities (monthly)', shared.utilities_monthly_base],
+    ['Utilities (monthly)', roundCurrency(shared.utilities_monthly_base)],
     ['Utilities Escalation (%/yr)', toPercent(shared.utilities_increase_rate)],
     ['Analysis Horizon (yrs)', shared.horizon_years],
     ['Investment Return (%/yr)', toPercent(shared.investment_return_rate)],
@@ -214,9 +220,9 @@ function buildInputsSheet(result: ScenarioResult): XLSX.WorkSheet {
   const taxRows: [string, string | number][] = [
     ['Include Federal Tax Effects', yesNo(tax.taxes_enabled)],
     ['Filing Status', FILING_STATUS_LABELS[tax.filing_status]],
-    ['Gross Annual Income', tax.gross_annual_income],
+    ['Gross Annual Income', roundCurrency(tax.gross_annual_income)],
     // Derived from the selected state (useScenario.ts), not a direct on-screen input field.
-    ['State Income Tax (Annual, Est.)', tax.state_income_tax_annual],
+    ['State Income Tax (Annual, Est.)', roundCurrency(tax.state_income_tax_annual)],
     ['State', tax.state],
     ['Itemized Mortgage Expenses', yesNo(tax.itemizes)],
     ['Include Capital Gains Tax on Sale', yesNo(tax.include_capital_gains)],
