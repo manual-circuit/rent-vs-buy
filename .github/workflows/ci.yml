@@ -32,13 +32,14 @@ jobs:
         run: pnpm typecheck
 
       - name: Test
-        run: pnpm test -- --run
+        run: pnpm test --run
 
       - name: Build
         run: pnpm build
 
       # Audit production dependencies only; fails on high/critical.
-      # To suppress a specific advisory, add it to pnpm.auditConfig.ignoreCves in package.json
+      # To suppress a specific advisory, add its GHSA ID to auditConfig.ignoreGhsas in
+      # pnpm-workspace.yaml (package.json's pnpm.auditConfig is no longer read as of pnpm 10+),
       # with a comment documenting the advisory ID and why it is acceptable.
       - name: Dependency audit
         run: pnpm audit --audit-level high --prod

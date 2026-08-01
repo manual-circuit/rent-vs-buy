@@ -1,0 +1,17 @@
+auditConfig:
+  ignoreGhsas:
+    # xlsx@0.18.5 — SheetJS stopped publishing to npm after 0.18.5 (unrelated licensing dispute), so
+    # no patched version is available on the npm registry for either advisory below. Both are
+    # parser-triggered (prototype pollution / ReDoS via a maliciously crafted spreadsheet file being
+    # read). This app only writes workbooks (src/lib/xlsx-export.ts uses aoa_to_sheet/book_new/write
+    # only) and never parses an externally supplied .xlsx/.csv file — the only prior file-import path
+    # (JSON scenario load) was retired in Stage 19. Confirmed via grep: no XLSX.read/parse call
+    # exists anywhere in this codebase. Revisit if a future stage ever adds a file-import feature.
+    - GHSA-4r6h-8v6p-xvw6 # CVE-2023-30533 — Prototype Pollution in SheetJS
+    - GHSA-5pgg-2g8v-p4x9 # CVE-2024-22363 — SheetJS ReDoS
+
+# pnpm 10+ blocks dependency postinstall/build scripts by default (supply-chain hardening). esbuild
+# (a transitive dependency of vite) needs its postinstall to fetch the platform-specific native
+# binary — without this, `pnpm build`/`pnpm test` fail because esbuild has no binary to run.
+allowBuilds:
+  esbuild: true
