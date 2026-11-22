@@ -93,7 +93,7 @@ describe('computeAnnualTaxBenefit — MID loan limit proration', () => {
 // Group 3 — SALT cap
 // ---------------------------------------------------------------------------
 describe('computeAnnualTaxBenefit — SALT cap', () => {
-  it('full SALT deduction when combined salt is below $40K cap', () => {
+  it('full SALT deduction when combined salt is below the $40,400 cap', () => {
     // property tax $6K + state income tax $3K = $9K < $40K cap → full $9K deductible
     // single $120K income; std deduction $16,100; taxable = $103,900 → 22% bracket (≤ $105,700)
     // MID $10K + SALT $9K = $19K; incremental = $19K - $16,100 = $2,900
@@ -107,25 +107,26 @@ describe('computeAnnualTaxBenefit — SALT cap', () => {
     expect(result).toBeCloseTo(638, 0)
   })
 
-  it('SALT is capped at $40K when combined exceeds cap', () => {
-    // property tax $25K + state income tax $20K = $45K → capped at $40K (OBBBA cap)
+  it('SALT is capped at $40,400 when combined exceeds cap', () => {
+    // property tax $25K + state income tax $20K = $45K → capped at $40,400 (2026 cap: OBBBA
+    // $40,000 for 2025, +1% for 2026)
     // single $200K income; std deduction $16,100; taxable = $183,900 → 24% bracket (≤ $201,775)
-    // MID $15K + SALT $40K (capped from $45K) = $55K; incremental = $55K - $16,100 = $38,900
-    // benefit = $38,900 × 0.24 = $9,336
+    // MID $15K + SALT $40,400 (capped from $45K) = $55,400; incremental = $55,400 - $16,100 = $39,300
+    // benefit = $39,300 × 0.24 = $9,432
     const result = computeAnnualTaxBenefit({
       taxInput: { ...BASE_TAX, gross_annual_income: 200_000, state_income_tax_annual: 20_000 },
       annualMortgageInterest: 15_000,
       annualPropertyTax: 25_000,
       loanBalance: 400_000,
     })
-    expect(result).toBeCloseTo(9_336, 0)
+    expect(result).toBeCloseTo(9_432, 0)
   })
 
-  it('married_filing_separately SALT cap is $20,000', () => {
-    // property tax $12K + state income tax $12K = $24K → capped at $20K (MFS cap)
+  it('married_filing_separately SALT cap is $20,200', () => {
+    // property tax $12K + state income tax $12K = $24K → capped at $20,200 (2026 MFS cap)
     // MFS $150K income; std deduction $16,100; taxable = $133,900 → 24% bracket (> $105,700)
-    // MID $15K + SALT $20K (capped from $24K) = $35K; incremental = $35K - $16,100 = $18,900
-    // benefit = $18,900 × 0.24 = $4,536
+    // MID $15K + SALT $20,200 (capped from $24K) = $35,200; incremental = $35,200 - $16,100 = $19,100
+    // benefit = $19,100 × 0.24 = $4,584
     const result = computeAnnualTaxBenefit({
       taxInput: {
         ...BASE_TAX,
@@ -137,7 +138,7 @@ describe('computeAnnualTaxBenefit — SALT cap', () => {
       annualPropertyTax: 12_000,
       loanBalance: 400_000,
     })
-    expect(result).toBeCloseTo(4_536, 0)
+    expect(result).toBeCloseTo(4_584, 0)
     // Verify the cap binds: increasing SALT beyond cap doesn't increase benefit
     const resultHigherSalt = computeAnnualTaxBenefit({
       taxInput: {
@@ -147,12 +148,12 @@ describe('computeAnnualTaxBenefit — SALT cap', () => {
         state_income_tax_annual: 12_000,
       },
       annualMortgageInterest: 15_000,
-      annualPropertyTax: 15_000, // $27K combined — also capped at $20K
+      annualPropertyTax: 15_000, // $27K combined — also capped at $20,200
       loanBalance: 400_000,
     })
     expect(result).toBeCloseTo(resultHigherSalt, 0)
-    expect(SALT_CAP_MFS_2026).toBe(20_000)
-    expect(SALT_CAP_2026).toBe(40_000)
+    expect(SALT_CAP_MFS_2026).toBe(20_200)
+    expect(SALT_CAP_2026).toBe(40_400)
   })
 })
 

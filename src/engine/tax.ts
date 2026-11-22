@@ -54,12 +54,14 @@ const BRACKETS_2026: Record<FilingStatus, Bracket[]> = {
   ],
 }
 
-// SALT (State and Local Tax) deduction cap — OBBBA (P.L. 119-21, 2025); IRS Pub. 530 (2025 Returns)
-// Cap raised from $10,000 to $40,000 (joint) / $20,000 (MFS) effective tax year 2025.
-// Phase-down: cap reduces for MAGI > $500,000 ($250,000 MFS), but not below $10,000 ($5,000 MFS).
-// Phase-down is NOT modeled here; engine uses the flat cap regardless of income level.
-export const SALT_CAP_2026 = 40_000
-export const SALT_CAP_MFS_2026 = 20_000
+// SALT (State and Local Tax) deduction cap — OBBBA (P.L. 119-21, 2025), IRC 164(b)(7)
+// $40,000 (joint) / $20,000 (MFS) for tax year 2025, rising 1% a year through 2029: $40,400 /
+// $20,200 for tax year 2026. Reverts to $10,000 / $5,000 in 2030 unless Congress acts.
+// Phase-down: the cap reduces by 30% of MAGI above $505,000 for 2026 ($252,500 MFS), but not
+// below $10,000 ($5,000 MFS). The phase-down is NOT modeled here; the engine uses the flat cap
+// regardless of income level.
+export const SALT_CAP_2026 = 40_400
+export const SALT_CAP_MFS_2026 = 20_200
 
 // Mortgage interest deduction loan limit — TCJA (2017), made permanent by OBBBA (2025)
 // Only interest on the first $750,000 of acquisition debt is deductible.
