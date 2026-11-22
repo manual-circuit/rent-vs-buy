@@ -164,4 +164,70 @@ describe('ExpertOptions', () => {
     fireEvent.change(screen.getByLabelText('New Closing Costs'), { target: { value: '3' } })
     expect(updateOwnership).toHaveBeenCalledWith({ refinance_closing_costs_pct: 3 })
   })
+
+  describe('sale disposition toggle', () => {
+    const renderWith = (input = DEFAULT_INPUT, updateOwnership = vi.fn()) =>
+      render(
+        <ExpertOptions
+          input={input}
+          updateTax={vi.fn()}
+          updateShared={vi.fn()}
+          updateOwnership={updateOwnership}
+        />,
+      )
+    const keepInput = {
+      ...DEFAULT_INPUT,
+      ownership: { ...DEFAULT_INPUT.ownership, sale_disposition: 'keep' as const },
+    }
+
+    it('is labelled "Sell home at horizon" and checked by default', () => {
+      renderWith()
+      const box = screen.getByLabelText('Sell home at horizon') as HTMLInputElement
+      expect(box.checked).toBe(true)
+    })
+
+    it('sits directly after the capital gains toggle', () => {
+      renderWith()
+      const cg = screen.getByLabelText('Include capital gains tax on sale')
+      const sell = screen.getByLabelText('Sell home at horizon')
+      expect(cg.compareDocumentPosition(sell) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+      const boxes = screen.getAllByRole('checkbox')
+      expect(boxes.indexOf(sell as HTMLInputElement)).toBe(
+        boxes.indexOf(cg as HTMLInputElement) + 1,
+      )
+    })
+
+    it('unchecking switches to keep; checking switches back to sell', () => {
+      const update = vi.fn()
+      const { unmount } = renderWith(DEFAULT_INPUT, update)
+      fireEvent.click(screen.getByLabelText('Sell home at horizon'))
+      expect(update).toHaveBeenCalledWith({ sale_disposition: 'keep' })
+      unmount()
+
+      const update2 = vi.fn()
+      renderWith(keepInput, update2)
+      fireEvent.click(screen.getByLabelText('Sell home at horizon'))
+      expect(update2).toHaveBeenCalledWith({ sale_disposition: 'sell' })
+    })
+
+    it('stays enabled and undimmed when taxes are off', () => {
+      renderWith({ ...DEFAULT_INPUT, tax: { ...DEFAULT_INPUT.tax, taxes_enabled: false } })
+      const box = screen.getByLabelText('Sell home at horizon') as HTMLInputElement
+      expect(box.disabled).toBe(false)
+      expect(box.closest('.opacity-50')).toBeNull()
+    })
+
+    it('keep mode mutes the capital gains control, keeps it editable, and says why', () => {
+      renderWith({ ...keepInput, tax: { ...keepInput.tax, taxes_enabled: true } })
+      const cg = screen.getByLabelText('Include capital gains tax on sale') as HTMLInputElement
+      expect(cg.disabled).toBe(false)
+      expect(cg.closest('.opacity-50')).not.toBeNull()
+      expect(screen.getByText('Not applied — home kept.')).toBeTruthy()
+    })
+
+    it('sell mode shows no "not applied" note', () => {
+      renderWith({ ...DEFAULT_INPUT, tax: { ...DEFAULT_INPUT.tax, taxes_enabled: true } })
+      expect(screen.queryByText('Not applied — home kept.')).toBeNull()
+    })
+  })
 })

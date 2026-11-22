@@ -172,7 +172,7 @@ describe('BreakEvenChart', () => {
     )
   })
 
-  it.each([1, 10, 23, 30, 40])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
+  it.each([1, 10, 23, 30])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
     render(<BreakEvenChart result={resultForHorizon(horizon)} updateShared={vi.fn()} />)
     const xAxis = findChildProps(capturedChildren, XAxis)
     expect(xAxis?.ticks).toEqual(yearTicks(horizon))
@@ -183,7 +183,6 @@ describe('BreakEvenChart', () => {
   it.each([
     [10, ['$0', '$200K', '$400K', '$600K']],
     [30, ['$0', '$0.5M', '$1.0M', '$1.5M', '$2.0M']],
-    [40, ['$0', '$1M', '$2M', '$3M', '$4M']],
   ])('y-axis labels at horizon %i (DEFAULT_INPUT) share one unit', (horizon, expected) => {
     render(<BreakEvenChart result={resultForHorizon(horizon)} updateShared={vi.fn()} />)
     expect(yAxisLabels(capturedChildren)).toEqual(expected)

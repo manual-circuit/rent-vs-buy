@@ -103,15 +103,14 @@ describe('yearTicks', () => {
     [10, [2, 4, 6, 8, 10]],
     [23, [5, 10, 15, 20]],
     [30, [5, 10, 15, 20, 25, 30]],
-    [40, [10, 20, 30, 40]],
   ]
 
   it.each(cases)('horizon %i', (horizon, expected) => {
     expect(yearTicks(horizon)).toEqual(expected)
   })
 
-  it('returns 3-7 ticks for every horizon from 3 to 40 (1-2 ticks below that)', () => {
-    for (let h = 1; h <= 40; h++) {
+  it('returns 3-7 ticks for every horizon from 3 to 30 (1-2 ticks below that)', () => {
+    for (let h = 1; h <= 30; h++) {
       const count = yearTicks(h).length
       expect(count).toBeLessThanOrEqual(7)
       expect(count).toBeGreaterThanOrEqual(h >= 3 ? 3 : h)
@@ -123,7 +122,7 @@ describe('yearTicks', () => {
   })
 
   it('never returns a tick outside [1, horizon]', () => {
-    for (let h = 1; h <= 40; h++) {
+    for (let h = 1; h <= 30; h++) {
       for (const t of yearTicks(h)) {
         expect(t).toBeGreaterThanOrEqual(1)
         expect(t).toBeLessThanOrEqual(h)

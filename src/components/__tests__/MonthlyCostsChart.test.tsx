@@ -133,7 +133,7 @@ describe('MonthlyCostsChart', () => {
     expect(formatter?.('renter')).toBe('Renting')
   })
 
-  it.each([1, 10, 23, 30, 40])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
+  it.each([1, 10, 23, 30])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
     render(<MonthlyCostsChart result={resultForHorizon(horizon)} />)
     const xAxis = findChildProps(capturedChildren, XAxis)
     expect(xAxis?.ticks).toEqual(yearTicks(horizon))
@@ -144,7 +144,6 @@ describe('MonthlyCostsChart', () => {
   it.each([
     [10, ['$0', '$2K', '$4K', '$6K']],
     [30, ['$0', '$5K', '$10K']],
-    [40, ['$0', '$5K', '$10K', '$15K']],
   ])('y-axis labels at horizon %i (DEFAULT_INPUT) share one unit', (horizon, expected) => {
     render(<MonthlyCostsChart result={resultForHorizon(horizon)} />)
     expect(yAxisLabels(capturedChildren)).toEqual(expected)

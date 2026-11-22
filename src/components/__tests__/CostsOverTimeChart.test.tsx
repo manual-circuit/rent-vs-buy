@@ -132,7 +132,7 @@ describe('CostsOverTimeChart', () => {
     expect(formatter?.('renter')).toBe('Renting')
   })
 
-  it.each([1, 10, 23, 30, 40])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
+  it.each([1, 10, 23, 30])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
     render(<CostsOverTimeChart result={resultForHorizon(horizon)} />)
     const xAxis = findChildProps(capturedChildren, XAxis)
     expect(xAxis?.ticks).toEqual(yearTicks(horizon))
@@ -143,7 +143,6 @@ describe('CostsOverTimeChart', () => {
   it.each([
     [10, ['$0', '$20K', '$40K', '$60K']],
     [30, ['$0', '$50K', '$100K']],
-    [40, ['$0', '$50K', '$100K', '$150K']],
   ])('y-axis labels at horizon %i (DEFAULT_INPUT) share one unit', (horizon, expected) => {
     render(<CostsOverTimeChart result={resultForHorizon(horizon)} />)
     expect(yAxisLabels(capturedChildren)).toEqual(expected)

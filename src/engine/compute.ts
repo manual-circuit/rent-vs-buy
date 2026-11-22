@@ -6,6 +6,7 @@ import {
   type ScenarioTotals,
   type Verdict,
   EngineInputError,
+  MAX_HORIZON_YEARS,
 } from './types'
 import {
   buildAmortizationScheduleWithRefinance,
@@ -63,6 +64,12 @@ function validateInputs(input: ScenarioInput): void {
     if (!Number.isFinite(v)) {
       throw new EngineInputError(`Non-finite input detected: ${v}`)
     }
+  }
+
+  if (input.shared.horizon_years > MAX_HORIZON_YEARS) {
+    throw new EngineInputError(
+      `horizon_years ${input.shared.horizon_years} exceeds the ${MAX_HORIZON_YEARS}-year maximum`,
+    )
   }
 }
 
@@ -328,7 +335,8 @@ export function computeScenario(input: ScenarioInput): ScenarioResult {
   const lastMonth = monthlySchedule[monthlySchedule.length - 1]!
   const saleRemainingLoan = lastMonth.remaining_loan_balance
   const sellingCostsFinal = saleHomeValue * (o.selling_cost_pct / 100)
-  const saleProceeds = saleHomeValue - saleRemainingLoan - sellingCostsFinal
+  const saleProceedsIfSold = saleHomeValue - saleRemainingLoan - sellingCostsFinal
+  const homeEquityAtHorizon = saleHomeValue - saleRemainingLoan
 
   // Capital gains tax (IRC §121 primary-residence exclusion) reduces the
   // owner's realized proceeds but not the reported sale_proceeds total,
@@ -339,9 +347,25 @@ export function computeScenario(input: ScenarioInput): ScenarioResult {
     gain,
     horizonYears: s.horizon_years,
   })
-  const saleProceedsAfterTax = saleProceeds - capitalGainsBreakdown.tax
+
+  // Disposition: 'sell' converts the home to cash (selling costs, then capital gains tax). 'keep'
+  // counts full equity at market value with no transaction, so neither cost applies. The cost a sale
+  // would incur is reported either way but only subtracted when the home is sold.
+  const keepHome = o.sale_disposition === 'keep'
+  const saleProceeds = keepHome ? homeEquityAtHorizon : saleProceedsIfSold
+  const capitalGainsTaxApplied = keepHome ? 0 : capitalGainsBreakdown.tax
+  const estimatedCostToSell = sellingCostsFinal + capitalGainsBreakdown.tax
+  const saleProceedsAfterTax = saleProceeds - capitalGainsTaxApplied
 
   const ownerFinalNetWorth = saleProceedsAfterTax + lastMonth.owner_investment_balance
+
+  // The Net Worth chart's last point reads the same number as the table and the verdict when the
+  // home is kept. (When it is sold the chart keeps its long-standing paper-value last point.)
+  const lastYear = yearlySummary[yearlySummary.length - 1]
+  if (keepHome && lastYear !== undefined) {
+    lastYear.owner_net_worth = ownerFinalNetWorth
+    lastYear.owner_equity_in_home = homeEquityAtHorizon
+  }
   const renterFinalNetWorth = lastMonth.renter_investment_balance + totalRenterDeposits
 
   const totalOwnershipOutflows =
@@ -373,11 +397,13 @@ export function computeScenario(input: ScenarioInput): ScenarioResult {
     total_refinance_closing_costs: refinanceClosingCostsAmount,
     total_ownership_outflows: totalOwnershipOutflows,
     sale_proceeds: saleProceeds,
+    home_equity_at_horizon: homeEquityAtHorizon,
+    estimated_cost_to_sell: estimatedCostToSell,
     owner_final_net_worth: ownerFinalNetWorth,
     total_mortgage_interest_deduction: totalMidBenefit,
     total_salt_benefit: totalSaltBenefit,
     total_tax_benefit: totalTaxBenefit,
-    total_capital_gains_tax: capitalGainsBreakdown.tax,
+    total_capital_gains_tax: capitalGainsTaxApplied,
     total_rent_paid: totalRent,
     total_pet_rent: totalPetRent,
     total_parking_fees: totalParking,

@@ -1,3 +1,11 @@
+// Longest analysis horizon the model accepts. The schema, both horizon sliders, the URL decoder
+// and computeScenario all read this one constant so they cannot disagree.
+export const MAX_HORIZON_YEARS = 30
+
+// What happens to the home at the end of the horizon: 'sell' converts it to cash (selling costs and
+// capital gains tax apply); 'keep' counts the equity at market value with no transaction.
+export type SaleDisposition = 'sell' | 'keep'
+
 export type OwnershipInput = {
   purchase_price: number
   down_payment_pct: number // percentage, e.g. 20 for 20%
@@ -16,6 +24,7 @@ export type OwnershipInput = {
   maintenance_increase_rate: number // annual, decimal
   insurance_increase_rate: number // annual, decimal
   selling_cost_pct: number // percentage of sale price at horizon end
+  sale_disposition: SaleDisposition // 'sell' = convert the home to cash at the horizon; 'keep' = count its equity
   refinance_enabled: boolean
   refinance_trigger_month: number // 1-based month within the horizon the refinance takes effect
   refinance_new_interest_rate: number // annual percentage, same convention as interest_rate
@@ -39,7 +48,7 @@ export type RentalInput = {
 export type SharedInput = {
   utilities_monthly_base: number // USD per month at year 1
   utilities_increase_rate: number // annual, decimal
-  horizon_years: number // 1 to 40
+  horizon_years: number // 1 to MAX_HORIZON_YEARS (30)
   investment_return_rate: number // annual, decimal, e.g. 0.075
   invest_vs_spend_ratio: number // 0.0 to 1.0
   real_dollars: boolean // display-only; not consumed by computeScenario — see Stage 13 brief
@@ -125,12 +134,16 @@ export type ScenarioTotals = {
   total_closing_costs: number
   total_refinance_closing_costs: number // USD; 0 when refinance_enabled is false
   total_ownership_outflows: number
+  // The owner's home position at the horizon, before capital gains tax: sale proceeds net of selling
+  // costs in 'sell' mode, home equity (no transaction costs) in 'keep' mode.
   sale_proceeds: number
+  home_equity_at_horizon: number // USD; home value at the horizon less the remaining loan, either mode
+  estimated_cost_to_sell: number // USD; selling costs plus capital gains tax if sold, either mode
   owner_final_net_worth: number
   total_mortgage_interest_deduction: number // USD; total MID claimed over horizon
   total_salt_benefit: number // USD; total property tax benefit claimed (post-cap)
   total_tax_benefit: number // USD; sum of all federal tax benefits over horizon
-  total_capital_gains_tax: number // USD; federal LTCG tax on sale-year gain, after §121 exclusion
+  total_capital_gains_tax: number // USD; federal LTCG tax on sale-year gain, after §121 exclusion; 0 in 'keep' mode (no sale)
   // Rental totals
   total_rent_paid: number
   total_pet_rent: number

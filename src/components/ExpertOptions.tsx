@@ -17,6 +17,7 @@ export function ExpertOptions({
   updateShared,
   updateOwnership,
 }: ExpertOptionsProps) {
+  const keepHome = input.ownership.sale_disposition === 'keep'
   return (
     <>
       <InputSection title="Tax & Income">
@@ -27,7 +28,13 @@ export function ExpertOptions({
 
       <InputSection title="Capital Gains">
         <div
-          className={`col-span-full ${input.tax.taxes_enabled ? '' : 'pointer-events-none opacity-50'}`}
+          className={`col-span-full ${
+            !input.tax.taxes_enabled
+              ? 'pointer-events-none opacity-50'
+              : keepHome
+                ? 'opacity-50'
+                : ''
+          }`}
         >
           <label className="flex items-center gap-2 text-sm">
             <input
@@ -41,6 +48,21 @@ export function ExpertOptions({
             <span className="font-medium text-ink-secondary">
               Include capital gains tax on sale
             </span>
+          </label>
+          {keepHome && <p className="mt-1 text-xs text-ink-muted">Not applied — home kept.</p>}
+        </div>
+        <div className="col-span-full">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={!keepHome}
+              onChange={(e) =>
+                updateOwnership({ sale_disposition: e.target.checked ? 'sell' : 'keep' })
+              }
+              aria-label="Sell home at horizon"
+              className="h-4 w-4 accent-accent"
+            />
+            <span className="font-medium text-ink-secondary">Sell home at horizon</span>
           </label>
         </div>
       </InputSection>

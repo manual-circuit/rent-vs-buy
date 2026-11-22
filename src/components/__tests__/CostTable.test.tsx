@@ -288,4 +288,73 @@ describe('CostTable', () => {
     render(<CostTable result={result} />)
     expect(screen.queryByText('Refinance closing costs')).toBeNull()
   })
+
+  describe('sale disposition', () => {
+    const keepInput = {
+      ...capitalGainsResult.inputs,
+      ownership: { ...capitalGainsResult.inputs.ownership, sale_disposition: 'keep' as const },
+    }
+    const keepResult = computeScenario(keepInput)
+
+    it('sell mode keeps the Sale proceeds label and the capital gains row', () => {
+      render(<CostTable result={capitalGainsResult} />)
+      expect(screen.getByText('Sale proceeds')).toBeTruthy()
+      expect(screen.queryByText('Home equity (unsold)')).toBeNull()
+      expect(screen.getByText('Capital gains tax')).toBeTruthy()
+    })
+
+    it('keep mode relabels the row and shows home equity', () => {
+      render(<CostTable result={keepResult} />)
+      expect(screen.queryByText('Sale proceeds')).toBeNull()
+      const label = screen.getByText('Home equity (unsold)')
+      const row = label.closest('tr') as HTMLElement
+      expect(row.textContent).toContain(formatCurrency(keepResult.totals.home_equity_at_horizon))
+    })
+
+    it('keep mode shows a dash for capital gains tax, not a zero', () => {
+      render(<CostTable result={keepResult} />)
+      const row = screen.getByText('Capital gains tax').closest('tr') as HTMLElement
+      const cells = row.querySelectorAll('td')
+      expect(cells[1]?.textContent).toBe('—')
+      expect(cells[2]?.textContent).toBe('—')
+    })
+
+    it('keep mode omits the capital gains row when taxes are off', () => {
+      const noTax = computeScenario({
+        ...keepInput,
+        tax: { ...keepInput.tax, taxes_enabled: false },
+      })
+      render(<CostTable result={noTax} />)
+      expect(screen.queryByText('Capital gains tax')).toBeNull()
+    })
+
+    it('keep mode: Final Net Worth and Net Gain read the keep value', () => {
+      render(<CostTable result={keepResult} />)
+      const finalRow = screen.getByText('Final Net Worth').closest('tr') as HTMLElement
+      expect(finalRow.textContent).toContain(
+        formatCurrency(keepResult.totals.owner_final_net_worth),
+      )
+      const gainRow = screen
+        .getByText(/^Net (Gain|Loss|Gain \/ Loss)$/)
+        .closest('tr') as HTMLElement
+      expect(gainRow.textContent).toContain(
+        formatCurrency(
+          keepResult.totals.owner_final_net_worth - keepResult.totals.total_ownership_outflows,
+        ),
+      )
+    })
+
+    it('the disclosure appears in keep mode only, with the cost in the mono font', () => {
+      const { unmount } = render(<CostTable result={capitalGainsResult} />)
+      expect(screen.queryByText(/Home equity is unrealized/)).toBeNull()
+      unmount()
+
+      render(<CostTable result={keepResult} />)
+      const note = screen.getByText(/Home equity is unrealized/)
+      expect(note.textContent).toContain('Selling would cost an estimated')
+      const figure = note.querySelector('span') as HTMLElement
+      expect(figure.className).toContain('font-mono')
+      expect(figure.textContent).toBe(formatCurrency(keepResult.totals.estimated_cost_to_sell))
+    })
+  })
 })

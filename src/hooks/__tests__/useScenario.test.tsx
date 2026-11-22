@@ -127,11 +127,11 @@ describe('useScenario — URL sync under rapid input (mobile slider drags)', () 
     expect(() => {
       for (let i = 0; i < 150; i++) {
         act(() => {
-          result.current.updateShared({ horizon_years: 1 + (i % 40) })
+          result.current.updateShared({ horizon_years: 1 + (i % 30) })
         })
       }
     }).not.toThrow()
-    expect(result.current.input.shared.horizon_years).toBe(1 + (149 % 40))
+    expect(result.current.input.shared.horizon_years).toBe(1 + (149 % 30))
   })
 
   it('writes the URL once, with the final value, after the changes stop', () => {
@@ -139,7 +139,7 @@ describe('useScenario — URL sync under rapid input (mobile slider drags)', () 
     const { result } = renderHook(() => useScenario())
     for (let i = 0; i < 30; i++) {
       act(() => {
-        result.current.updateShared({ horizon_years: 1 + (i % 40) })
+        result.current.updateShared({ horizon_years: 1 + (i % 30) })
       })
     }
     expect(spy).not.toHaveBeenCalled()
@@ -149,7 +149,7 @@ describe('useScenario — URL sync under rapid input (mobile slider drags)', () 
     expect(spy).toHaveBeenCalledTimes(1)
     const url = String(spy.mock.calls[0]?.[2])
     const decoded = decode(new URLSearchParams(url.slice(1)).get('s') ?? '')
-    expect(decoded?.shared.horizon_years).toBe(1 + (29 % 40))
+    expect(decoded?.shared.horizon_years).toBe(1 + (29 % 30))
   })
 
   it('keeps working when replaceState always throws', () => {

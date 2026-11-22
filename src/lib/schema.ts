@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { MAX_HORIZON_YEARS } from '../engine'
 
 const OwnershipSchema = z.object({
   purchase_price: z.number().finite().positive(),
@@ -18,6 +19,7 @@ const OwnershipSchema = z.object({
   maintenance_increase_rate: z.number().finite().min(-0.5).max(0.5),
   insurance_increase_rate: z.number().finite().min(-0.5).max(0.5),
   selling_cost_pct: z.number().finite().min(0).max(30),
+  sale_disposition: z.enum(['sell', 'keep']).default('sell'),
   refinance_enabled: z.boolean().default(false),
   refinance_trigger_month: z.number().finite().int().min(1).max(600).default(60),
   refinance_new_interest_rate: z.number().finite().min(0).max(100).default(6.0),
@@ -41,7 +43,7 @@ const RentalSchema = z.object({
 const SharedSchema = z.object({
   utilities_monthly_base: z.number().finite().min(0),
   utilities_increase_rate: z.number().finite().min(-0.5).max(0.5),
-  horizon_years: z.number().finite().int().min(1).max(40),
+  horizon_years: z.number().finite().int().min(1).max(MAX_HORIZON_YEARS),
   investment_return_rate: z.number().finite().min(-0.5).max(0.5),
   invest_vs_spend_ratio: z.number().finite().min(0).max(1),
   real_dollars: z.boolean().default(false),

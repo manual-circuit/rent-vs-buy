@@ -49,3 +49,61 @@ describe('encode / decode', () => {
     expect(() => decode(btoa(encodeURIComponent('{}')))).not.toThrow()
   })
 })
+
+describe('decode: sale disposition and the 30-year horizon cap', () => {
+  const encodeRaw = (obj: unknown) => btoa(encodeURIComponent(JSON.stringify(obj)))
+
+  it('a link made before the disposition field existed loads as sell', () => {
+    const { sale_disposition: _omit, ...legacyOwnership } = DEFAULT_INPUT.ownership
+    const legacy = { ...DEFAULT_INPUT, ownership: legacyOwnership }
+    const result = decode(encodeRaw(legacy))
+    expect(result?.ownership.sale_disposition).toBe('sell')
+    expect(result).toEqual(DEFAULT_INPUT)
+  })
+
+  it('keep survives a round trip', () => {
+    const keep = {
+      ...DEFAULT_INPUT,
+      ownership: { ...DEFAULT_INPUT.ownership, sale_disposition: 'keep' as const },
+    }
+    expect(decode(encode(keep))?.ownership.sale_disposition).toBe('keep')
+  })
+
+  it('rejects an unknown disposition value', () => {
+    const bad = {
+      ...DEFAULT_INPUT,
+      ownership: { ...DEFAULT_INPUT.ownership, sale_disposition: 'rent-out' },
+    }
+    expect(decode(encodeRaw(bad))).toBeNull()
+  })
+
+  it('a link with a 40-year horizon loads at 30 with every other input preserved', () => {
+    const old = {
+      ...DEFAULT_INPUT,
+      ownership: { ...DEFAULT_INPUT.ownership, purchase_price: 725000 },
+      rental: { ...DEFAULT_INPUT.rental, base_rent_monthly: 3100 },
+      shared: { ...DEFAULT_INPUT.shared, horizon_years: 40 },
+    }
+    const result = decode(encodeRaw(old))
+    expect(result).toEqual({ ...old, shared: { ...old.shared, horizon_years: 30 } })
+  })
+
+  it('a horizon of exactly 30 is left alone', () => {
+    const at30 = { ...DEFAULT_INPUT, shared: { ...DEFAULT_INPUT.shared, horizon_years: 30 } }
+    expect(decode(encodeRaw(at30))?.shared.horizon_years).toBe(30)
+  })
+
+  it('clamping a long horizon does not rescue a link that is otherwise invalid', () => {
+    const bad = {
+      ...DEFAULT_INPUT,
+      ownership: { ...DEFAULT_INPUT.ownership, purchase_price: -1 },
+      shared: { ...DEFAULT_INPUT.shared, horizon_years: 40 },
+    }
+    expect(decode(encodeRaw(bad))).toBeNull()
+  })
+
+  it('a non-numeric horizon is still rejected, not clamped', () => {
+    const bad = { ...DEFAULT_INPUT, shared: { ...DEFAULT_INPUT.shared, horizon_years: 'forty' } }
+    expect(decode(encodeRaw(bad))).toBeNull()
+  })
+})

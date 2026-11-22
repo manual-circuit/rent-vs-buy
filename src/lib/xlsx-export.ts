@@ -54,6 +54,7 @@ function buildSummarySheet(result: ScenarioResult): XLSX.WorkSheet {
     return deflateIfEnabled(value, real_dollars, inflation_rate, horizon_years)
   }
 
+  const keepHome = inputs.ownership.sale_disposition === 'keep'
   const ownerNetGainLoss = totals.owner_final_net_worth - totals.total_ownership_outflows
   const renterNetGainLoss = totals.renter_final_net_worth - totals.total_rentership_outflows
 
@@ -97,9 +98,17 @@ function buildSummarySheet(result: ScenarioResult): XLSX.WorkSheet {
     roundCurrency(totals.total_rentership_outflows),
   ])
 
-  rows.push(['Sale proceeds', roundCurrency(atHorizon(totals.sale_proceeds)), ''])
+  rows.push([
+    keepHome ? 'Home equity (unsold)' : 'Sale proceeds',
+    roundCurrency(atHorizon(totals.sale_proceeds)),
+    '',
+  ])
 
-  if (inputs.tax.taxes_enabled && totals.total_capital_gains_tax !== 0) {
+  if (keepHome) {
+    if (inputs.tax.taxes_enabled && inputs.tax.include_capital_gains) {
+      rows.push(['Capital gains tax', '—', ''])
+    }
+  } else if (inputs.tax.taxes_enabled && totals.total_capital_gains_tax !== 0) {
     rows.push(['Capital gains tax', roundCurrency(atHorizon(totals.total_capital_gains_tax)), ''])
   }
 
@@ -187,6 +196,7 @@ function buildInputsSheet(result: ScenarioResult): XLSX.WorkSheet {
     ['Maintenance Escalation (%/yr)', toPercent(ownership.maintenance_increase_rate)],
     ['Insurance Escalation (%/yr)', toPercent(ownership.insurance_increase_rate)],
     ['Selling Cost (%)', ownership.selling_cost_pct],
+    ['Sell Home at Horizon', yesNo(ownership.sale_disposition === 'sell')],
     ['Enable Refinance', yesNo(ownership.refinance_enabled)],
     ['Refinance Trigger Month', ownership.refinance_trigger_month],
     ['Refinance New Interest Rate (%/yr)', roundRate(ownership.refinance_new_interest_rate)],

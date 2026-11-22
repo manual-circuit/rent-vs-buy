@@ -40,8 +40,10 @@ export function HeadlineResult({ result }: HeadlineResultProps) {
       )}
       {result.inputs.tax.taxes_enabled && (
         <p className="mt-4 border-t border-surface-rule pt-4 text-xs text-ink-muted">
-          Federal tax estimates use {FEDERAL_TAX_AS_OF_DATE} IRS tables, including capital gains tax
-          on sale.
+          Federal tax estimates use {FEDERAL_TAX_AS_OF_DATE} IRS tables
+          {result.inputs.ownership.sale_disposition === 'keep'
+            ? '.'
+            : ', including capital gains tax on sale.'}
         </p>
       )}
       {real_dollars && (

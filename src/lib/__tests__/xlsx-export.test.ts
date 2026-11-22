@@ -214,8 +214,8 @@ describe('buildWorkbook', () => {
     const rows = toRows(wb.Sheets['Inputs'] as XLSX.WorkSheet)
     const dataRows = rows.slice(1)
 
-    // 22 ownership + 10 rental + 7 shared + 7 tax fields = 46
-    expect(dataRows).toHaveLength(46)
+    // 23 ownership + 10 rental + 7 shared + 7 tax fields = 47
+    expect(dataRows).toHaveLength(47)
     expect(
       dataRows.every((r) => typeof r[0] === 'string' && !/[a-z]_[a-z]/.test(r[0] as string)),
     ).toBe(true)
@@ -252,5 +252,58 @@ describe('buildWorkbook', () => {
       expect(cell.t).toBe('s')
       expect(cell.f).toBeUndefined()
     }
+  })
+
+  describe('sale disposition', () => {
+    const base: ScenarioInput = {
+      ...DEFAULT_INPUT,
+      shared: { ...DEFAULT_INPUT.shared, horizon_years: 20 },
+      tax: { ...DEFAULT_INPUT.tax, taxes_enabled: true, gross_annual_income: 150000 },
+    }
+    const keepInput: ScenarioInput = {
+      ...base,
+      ownership: { ...base.ownership, sale_disposition: 'keep' },
+    }
+    const summary = (input: ScenarioInput) =>
+      toRows(readBack(buildWorkbook(computeScenario(input))).Sheets['Summary'] as XLSX.WorkSheet)
+
+    it('sell: Summary keeps the Sale proceeds label', () => {
+      const rows = summary(base)
+      expect(rows.some((r) => r[0] === 'Sale proceeds')).toBe(true)
+      expect(rows.some((r) => r[0] === 'Home equity (unsold)')).toBe(false)
+    })
+
+    it('keep: Summary shows home equity and a dash for capital gains tax', () => {
+      const result = computeScenario(keepInput)
+      const rows = toRows(readBack(buildWorkbook(result)).Sheets['Summary'] as XLSX.WorkSheet)
+      const equity = rows.find((r) => r[0] === 'Home equity (unsold)')
+      expect(equity?.[1]).toBeCloseTo(result.totals.home_equity_at_horizon, 2)
+      expect(rows.some((r) => r[0] === 'Sale proceeds')).toBe(false)
+      expect(rows.find((r) => r[0] === 'Capital gains tax')?.[1]).toBe('—')
+    })
+
+    it('keep: Summary final net worth equals the verdict value', () => {
+      const result = computeScenario(keepInput)
+      const rows = toRows(readBack(buildWorkbook(result)).Sheets['Summary'] as XLSX.WorkSheet)
+      const finalRow = rows.find((r) => r[0] === 'Final Net Worth')
+      expect(finalRow?.[1]).toBeCloseTo(result.verdict.owner_net_worth, 2)
+    })
+
+    it('keep: the Net Worth sheet ends on the same number as Summary', () => {
+      const result = computeScenario(keepInput)
+      const wb = readBack(buildWorkbook(result))
+      const chartRows = toRows(wb.Sheets['Net Worth'] as XLSX.WorkSheet).slice(1)
+      const last = chartRows[chartRows.length - 1]
+      expect(last?.[1]).toBeCloseTo(result.totals.owner_final_net_worth, 2)
+    })
+
+    it('Inputs sheet records the selected disposition', () => {
+      const read = (input: ScenarioInput) =>
+        toRows(
+          readBack(buildWorkbook(computeScenario(input))).Sheets['Inputs'] as XLSX.WorkSheet,
+        ).find((r) => r[0] === 'Sell Home at Horizon')
+      expect(read(base)?.[1]).toBe('Yes')
+      expect(read(keepInput)?.[1]).toBe('No')
+    })
   })
 })

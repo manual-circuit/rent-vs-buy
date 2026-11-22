@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import App from '../App'
+import { DEFAULT_INPUT } from '../lib/defaults'
 
 beforeEach(() => {
   Object.defineProperty(window, 'location', { value: { search: '' }, writable: true })
@@ -80,12 +81,45 @@ describe('App — rapid slider changes on a browser that rate-limits history.rep
     const slider = screen.getByLabelText('Analysis horizon in years')
     expect(() => {
       for (let i = 0; i < 200; i++) {
-        fireEvent.change(slider, { target: { value: String(1 + (i % 40)) } })
+        fireEvent.change(slider, { target: { value: String(1 + (i % 30)) } })
       }
       vi.advanceTimersByTime(1000)
     }).not.toThrow()
     expect(screen.getByRole('main')).toBeInTheDocument()
-    expect((slider as HTMLInputElement).value).toBe(String(1 + (199 % 40)))
+    expect((slider as HTMLInputElement).value).toBe(String(1 + (199 % 30)))
     expect(calls).toBeLessThan(5)
+  })
+})
+
+describe('App — horizon cap', () => {
+  it('the horizon slider stops at 30 years', () => {
+    render(<App />)
+    const slider = screen.getByLabelText('Analysis horizon in years') as HTMLInputElement
+    expect(slider.max).toBe('30')
+  })
+
+  it('the chart horizon slider stops at 30 years and is labelled to match', () => {
+    render(<App />)
+    const slider = screen.getByLabelText('Chart horizon in years') as HTMLInputElement
+    expect(slider.max).toBe('30')
+    expect(screen.getByText('30 yrs')).toBeInTheDocument()
+    expect(screen.queryByText('40 yrs')).toBeNull()
+  })
+
+  it('a shared link with a 40-year horizon loads at 30 with the other inputs intact', () => {
+    const old = {
+      ...DEFAULT_INPUT,
+      ownership: { ...DEFAULT_INPUT.ownership, purchase_price: 725000 },
+      shared: { ...DEFAULT_INPUT.shared, horizon_years: 40 },
+    }
+    Object.defineProperty(window, 'location', {
+      value: { search: `?s=${btoa(encodeURIComponent(JSON.stringify(old)))}` },
+      writable: true,
+    })
+    render(<App />)
+    expect((screen.getByLabelText('Analysis horizon in years') as HTMLInputElement).value).toBe(
+      '30',
+    )
+    expect(screen.getByDisplayValue('725000')).toBeInTheDocument()
   })
 })

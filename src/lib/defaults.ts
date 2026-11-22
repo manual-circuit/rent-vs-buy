@@ -19,6 +19,7 @@ export const DEFAULT_INPUT: ScenarioInput = {
     maintenance_increase_rate: 0.03,
     insurance_increase_rate: 0.03,
     selling_cost_pct: 7.5,
+    sale_disposition: 'sell',
     refinance_enabled: false,
     refinance_trigger_month: 60,
     refinance_new_interest_rate: 6.0,

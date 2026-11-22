@@ -1,4 +1,10 @@
-import type { ScenarioInput, OwnershipInput, RentalInput, SharedInput } from '../engine'
+import {
+  MAX_HORIZON_YEARS,
+  type ScenarioInput,
+  type OwnershipInput,
+  type RentalInput,
+  type SharedInput,
+} from '../engine'
 import { toPercent } from '../lib/format'
 import { InputField } from './InputField'
 import { Tooltip } from './Tooltip'
@@ -78,7 +84,7 @@ export function BasicInputs({
         <input
           type="range"
           min={1}
-          max={40}
+          max={MAX_HORIZON_YEARS}
           step={1}
           value={shared.horizon_years}
           onChange={(e) => updateShared({ horizon_years: parseInt(e.target.value, 10) })}

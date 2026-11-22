@@ -1,5 +1,5 @@
 export { computeScenario } from './compute'
-export { EngineInputError } from './types'
+export { EngineInputError, MAX_HORIZON_YEARS } from './types'
 export { FEDERAL_TAX_AS_OF_DATE, computeCapitalGainsTax } from './tax'
 export type {
   ScenarioInput,
@@ -13,5 +13,6 @@ export type {
   YearlySummary,
   ScenarioTotals,
   Verdict,
+  SaleDisposition,
 } from './types'
 export type { TaxBenefitBreakdown, CapitalGainsBreakdown } from './tax'

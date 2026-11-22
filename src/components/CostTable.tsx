@@ -19,6 +19,7 @@ export function CostTable({ result }: CostTableProps) {
   const downPayment = inputs.ownership.purchase_price * (inputs.ownership.down_payment_pct / 100)
   const { real_dollars, inflation_rate, horizon_years } = inputs.shared
 
+  const keepHome = inputs.ownership.sale_disposition === 'keep'
   const ownerNetGainLoss = totals.owner_final_net_worth - totals.total_ownership_outflows
   const renterNetGainLoss = totals.renter_final_net_worth - totals.total_rentership_outflows
 
@@ -71,17 +72,33 @@ export function CostTable({ result }: CostTableProps) {
       renter: totals.total_rentership_outflows,
       variant: 'subtotal',
     },
-    { label: 'Sale proceeds', owner: atHorizon(totals.sale_proceeds), renter: null },
-    ...(inputs.tax.taxes_enabled && totals.total_capital_gains_tax !== 0
-      ? [
-          {
-            label: 'Capital gains tax',
-            owner: atHorizon(totals.total_capital_gains_tax),
-            renter: null,
-            variant: 'capitalgainstax' as const,
-          },
-        ]
-      : []),
+    {
+      label: keepHome ? 'Home equity (unsold)' : 'Sale proceeds',
+      owner: atHorizon(totals.sale_proceeds),
+      renter: null,
+    },
+    // Keeping the home means no sale, so the tax does not apply: shown as a dash, not a zero.
+    ...(keepHome
+      ? inputs.tax.taxes_enabled && inputs.tax.include_capital_gains
+        ? [
+            {
+              label: 'Capital gains tax',
+              owner: null,
+              renter: null,
+              variant: 'capitalgainstax' as const,
+            },
+          ]
+        : []
+      : inputs.tax.taxes_enabled && totals.total_capital_gains_tax !== 0
+        ? [
+            {
+              label: 'Capital gains tax',
+              owner: atHorizon(totals.total_capital_gains_tax),
+              renter: null,
+              variant: 'capitalgainstax' as const,
+            },
+          ]
+        : []),
     {
       label: 'Investment portfolio',
       owner: atHorizon(lastRow?.owner_investment_balance ?? 0),
@@ -211,6 +228,15 @@ export function CostTable({ result }: CostTableProps) {
           ))}
         </tbody>
       </table>
+      {keepHome && (
+        <p className="mt-3 text-xs text-ink-muted">
+          Home equity is unrealized. Selling would cost an estimated{' '}
+          <span className="font-mono tabular-nums">
+            {formatCurrency(atHorizon(totals.estimated_cost_to_sell))}
+          </span>{' '}
+          in fees and taxes.
+        </p>
+      )}
       {real_dollars && (
         <p className="mt-3 text-xs text-ink-muted">
           Summed costs shown in nominal dollars; horizon-end totals shown in today's dollars.

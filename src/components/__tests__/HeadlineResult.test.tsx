@@ -99,4 +99,24 @@ describe('HeadlineResult', () => {
     render(<HeadlineResult result={realDollarsResult} />)
     expect(screen.getByText(/today's dollars/)).toBeTruthy()
   })
+
+  it('keep mode: the tax note no longer claims capital gains tax is included', () => {
+    const keep = {
+      ...taxEnabledResult,
+      inputs: {
+        ...taxEnabledResult.inputs,
+        ownership: { ...taxEnabledResult.inputs.ownership, sale_disposition: 'keep' as const },
+      },
+    }
+    render(<HeadlineResult result={keep} />)
+    expect(screen.getByText(/Federal tax estimates use/).textContent).not.toMatch(/capital gains/)
+    expect(screen.getByText(new RegExp(FEDERAL_TAX_AS_OF_DATE))).toBeTruthy()
+  })
+
+  it('sell mode: the tax note still mentions capital gains tax on sale', () => {
+    render(<HeadlineResult result={taxEnabledResult} />)
+    expect(screen.getByText(/Federal tax estimates use/).textContent).toMatch(
+      /including capital gains tax on sale/,
+    )
+  })
 })
