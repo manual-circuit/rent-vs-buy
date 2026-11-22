@@ -21,22 +21,32 @@ Read these before using them:
   not captured unless the script runs with `--include-local`.
 - States with no file have no NFC income tax formula.
 - Do not edit these files by hand; the next refresh overwrites them.
-## Relation to the existing bracket pipeline
+## How the calculator uses these files
 
-The calculator already loads state brackets from a different source:
+These bulletins are the calculator's only source of state income tax brackets.
 
-- `scripts/parse-state-brackets.ts` reads
-  `reference/income-tax-brackets/2026-State-Individual-Income-Tax-Rate-Brackets.xlsx`
-  and writes `src/lib/state-brackets.json`.
-- `src/lib/state-tax.ts` merges that with `src/lib/state-brackets-pdf.json`
-  (`source: 'excel' | 'pdf'`) and exports `STATE_TAX_SOURCE` and
-  `STATE_TAX_AS_OF_DATE`.
+- `src/lib/nfc-state-specs.ts` holds one hand-written spec per state (deductions, bracket
+  floors and rates), transcribed from the bulletin. A transcription is needed because NFC's
+  formulas differ by state: flat rates, "base plus rate" tables, rate-minus-adjustment tables,
+  and deductions that shrink with income.
+- `node scripts/build-nfc-brackets.ts` generates `src/lib/state-brackets-nfc.json` from the
+  specs and `manifest.json`. Each entry records its source file, NFC reference number and the
+  bulletin's published date. The nine states with no wage income tax have no bulletin and are
+  listed in `src/lib/state-tax.ts`.
+- `pnpm test` checks that every deduction, floor and rate in a spec is printed in that
+  state's bulletin, and that the JSON matches the specs. A refresh that changes a bulletin
+  therefore fails the tests until the spec is updated.
 
-Nothing reads this folder yet. Integration is a separate decision: use these files to
-cross-check the existing JSON after each refresh, or replace the Excel source with them.
-Either way, map bracket floors, rates and standard deductions into `StateBracketSchedule`;
-the payroll steps do not carry over. This folder is tracked in git and committed by the
-refresh workflow (it lives in `data/`, not `reference/`, because `reference/` is gitignored).
+The modeling rules (single and joint filers, deductions but no credits, one exemption per
+taxpayer and none for dependents, top-income-band values where a deduction phases out) are
+listed at the top of `nfc-state-specs.ts`. Some bulletins are years old (Pennsylvania 2004,
+Delaware 2020); check `as_of_date` before treating a schedule as current law. Where NFC has not
+republished after a law change, the spec carries a documented `override` (Iowa's flat 3.8%
+rate since 2025); a test fails once NFC prints something different, so the override gets removed. The payroll
+steps (TSP, FEHB, annualization) do not carry over into the calculator.
+
+This folder is tracked in git and committed by the refresh workflow (it lives in `data/`,
+not `reference/`, because `reference/` is gitignored).
 
 ## Refresh
 

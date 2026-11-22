@@ -1,0 +1,1955 @@
+{
+  "Alabama": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      },
+      {
+        "floor": 500,
+        "rate": 0.04
+      },
+      {
+        "floor": 3000,
+        "rate": 0.05
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      },
+      {
+        "floor": 1000,
+        "rate": 0.04
+      },
+      {
+        "floor": 6000,
+        "rate": 0.05
+      }
+    ],
+    "single_standard_deduction": 4000,
+    "mfj_standard_deduction": 8000,
+    "single_deduction_basis": "standard deduction (top income band) $2,500 + personal exemption $1,500",
+    "mfj_deduction_basis": "standard deduction (top income band) $5,000 + personal exemption $3,000",
+    "source_md": "data/state-tax/AL.md",
+    "nfc_reference": "NFC-22-1666037747",
+    "as_of_date": "2022-10-17"
+  },
+  "Arizona": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/AZ.md",
+    "nfc_reference": "NFC-23-1686066172",
+    "as_of_date": "2023-06-06"
+  },
+  "Arkansas": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 5600,
+        "rate": 0.02
+      },
+      {
+        "floor": 11200,
+        "rate": 0.03
+      },
+      {
+        "floor": 16000,
+        "rate": 0.034
+      },
+      {
+        "floor": 26400,
+        "rate": 0.037
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 5600,
+        "rate": 0.02
+      },
+      {
+        "floor": 11200,
+        "rate": 0.03
+      },
+      {
+        "floor": 16000,
+        "rate": 0.034
+      },
+      {
+        "floor": 26400,
+        "rate": 0.037
+      }
+    ],
+    "single_standard_deduction": 2470,
+    "mfj_standard_deduction": 2470,
+    "single_deduction_basis": "standard deduction $2,470",
+    "mfj_deduction_basis": "standard deduction $2,470",
+    "source_md": "data/state-tax/AR.md",
+    "nfc_reference": "NFC-26-1781190112",
+    "as_of_date": "2026-08-24"
+  },
+  "California": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.011
+      },
+      {
+        "floor": 11079,
+        "rate": 0.022
+      },
+      {
+        "floor": 26264,
+        "rate": 0.044
+      },
+      {
+        "floor": 41452,
+        "rate": 0.066
+      },
+      {
+        "floor": 57542,
+        "rate": 0.088
+      },
+      {
+        "floor": 72724,
+        "rate": 0.1023
+      },
+      {
+        "floor": 371479,
+        "rate": 0.1133
+      },
+      {
+        "floor": 445771,
+        "rate": 0.1243
+      },
+      {
+        "floor": 742953,
+        "rate": 0.1353
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.1463
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.011
+      },
+      {
+        "floor": 22158,
+        "rate": 0.022
+      },
+      {
+        "floor": 52528,
+        "rate": 0.044
+      },
+      {
+        "floor": 82904,
+        "rate": 0.066
+      },
+      {
+        "floor": 115084,
+        "rate": 0.088
+      },
+      {
+        "floor": 145448,
+        "rate": 0.1023
+      },
+      {
+        "floor": 742958,
+        "rate": 0.1133
+      },
+      {
+        "floor": 891542,
+        "rate": 0.1243
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.1353
+      },
+      {
+        "floor": 1485906,
+        "rate": 0.1463
+      }
+    ],
+    "single_standard_deduction": 5706,
+    "mfj_standard_deduction": 11412,
+    "single_deduction_basis": "standard deduction $5,706",
+    "mfj_deduction_basis": "standard deduction (married, 2+ exemptions) $11,412",
+    "source_md": "data/state-tax/CA.md",
+    "nfc_reference": "NFC-26-1777466554",
+    "as_of_date": "2026-07-06"
+  },
+  "Colorado": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.044
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.044
+      }
+    ],
+    "single_standard_deduction": 5500,
+    "mfj_standard_deduction": 11000,
+    "single_deduction_basis": "standard deduction (all other statuses) $5,500",
+    "mfj_deduction_basis": "standard deduction (married filing jointly) $11,000",
+    "source_md": "data/state-tax/CO.md",
+    "nfc_reference": "NFC-26-1772551649",
+    "as_of_date": "2026-03-04"
+  },
+  "Connecticut": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      },
+      {
+        "floor": 10000,
+        "rate": 0.045
+      },
+      {
+        "floor": 50000,
+        "rate": 0.055
+      },
+      {
+        "floor": 100000,
+        "rate": 0.06
+      },
+      {
+        "floor": 200000,
+        "rate": 0.065
+      },
+      {
+        "floor": 250000,
+        "rate": 0.069
+      },
+      {
+        "floor": 500000,
+        "rate": 0.0699
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      },
+      {
+        "floor": 20000,
+        "rate": 0.045
+      },
+      {
+        "floor": 100000,
+        "rate": 0.055
+      },
+      {
+        "floor": 200000,
+        "rate": 0.06
+      },
+      {
+        "floor": 400000,
+        "rate": 0.065
+      },
+      {
+        "floor": 500000,
+        "rate": 0.069
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.0699
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/CT.md",
+    "nfc_reference": "NFC-24-1712697342",
+    "as_of_date": "2024-07-08"
+  },
+  "D.C.": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.04
+      },
+      {
+        "floor": 10000,
+        "rate": 0.06
+      },
+      {
+        "floor": 40000,
+        "rate": 0.065
+      },
+      {
+        "floor": 60000,
+        "rate": 0.085
+      },
+      {
+        "floor": 250000,
+        "rate": 0.0925
+      },
+      {
+        "floor": 500000,
+        "rate": 0.0975
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.1075
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.04
+      },
+      {
+        "floor": 10000,
+        "rate": 0.06
+      },
+      {
+        "floor": 40000,
+        "rate": 0.065
+      },
+      {
+        "floor": 60000,
+        "rate": 0.085
+      },
+      {
+        "floor": 250000,
+        "rate": 0.0925
+      },
+      {
+        "floor": 500000,
+        "rate": 0.0975
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.1075
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/DC.md",
+    "nfc_reference": "NFC-22-1668460546",
+    "as_of_date": "2022-11-14"
+  },
+  "Delaware": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 2000,
+        "rate": 0.022
+      },
+      {
+        "floor": 5000,
+        "rate": 0.039
+      },
+      {
+        "floor": 10000,
+        "rate": 0.048
+      },
+      {
+        "floor": 20000,
+        "rate": 0.052
+      },
+      {
+        "floor": 25000,
+        "rate": 0.0555
+      },
+      {
+        "floor": 60000,
+        "rate": 0.066
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 2000,
+        "rate": 0.022
+      },
+      {
+        "floor": 5000,
+        "rate": 0.039
+      },
+      {
+        "floor": 10000,
+        "rate": 0.048
+      },
+      {
+        "floor": 20000,
+        "rate": 0.052
+      },
+      {
+        "floor": 25000,
+        "rate": 0.0555
+      },
+      {
+        "floor": 60000,
+        "rate": 0.066
+      }
+    ],
+    "single_standard_deduction": 3250,
+    "mfj_standard_deduction": 6500,
+    "single_deduction_basis": "standard deduction $3,250",
+    "mfj_deduction_basis": "standard deduction (joint return) $6,500",
+    "source_md": "data/state-tax/DE.md",
+    "nfc_reference": "NFC-20-1605647748",
+    "as_of_date": "2020-11-17"
+  },
+  "Georgia": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0499
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0499
+      }
+    ],
+    "single_standard_deduction": 15000,
+    "mfj_standard_deduction": 30000,
+    "single_deduction_basis": "standard deduction (single) $15,000",
+    "mfj_deduction_basis": "standard deduction (joint, one spouse working) $30,000",
+    "source_md": "data/state-tax/GA.md",
+    "nfc_reference": "NFC-26-1784643404",
+    "as_of_date": "2026-07-21"
+  },
+  "Hawaii": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.014
+      },
+      {
+        "floor": 9600,
+        "rate": 0.032
+      },
+      {
+        "floor": 14400,
+        "rate": 0.055
+      },
+      {
+        "floor": 19200,
+        "rate": 0.064
+      },
+      {
+        "floor": 24000,
+        "rate": 0.068
+      },
+      {
+        "floor": 36000,
+        "rate": 0.072
+      },
+      {
+        "floor": 48000,
+        "rate": 0.076
+      },
+      {
+        "floor": 125000,
+        "rate": 0.079
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.014
+      },
+      {
+        "floor": 19200,
+        "rate": 0.032
+      },
+      {
+        "floor": 28800,
+        "rate": 0.055
+      },
+      {
+        "floor": 38400,
+        "rate": 0.064
+      },
+      {
+        "floor": 48000,
+        "rate": 0.068
+      },
+      {
+        "floor": 72000,
+        "rate": 0.072
+      },
+      {
+        "floor": 96000,
+        "rate": 0.076
+      },
+      {
+        "floor": 250000,
+        "rate": 0.079
+      }
+    ],
+    "single_standard_deduction": 5494,
+    "mfj_standard_deduction": 6638,
+    "single_deduction_basis": "extra lump-sum withholding allowance $4,350 + exemption $1,144",
+    "mfj_deduction_basis": "extra lump-sum withholding allowance $4,350 + exemption $1,144 x 2",
+    "source_md": "data/state-tax/HI.md",
+    "nfc_reference": "NFC-26-1768321238",
+    "as_of_date": "2026-08-17"
+  },
+  "Idaho": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 16100,
+        "rate": 0.053
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 32200,
+        "rate": 0.053
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/ID.md",
+    "nfc_reference": "NFC-26-1786997961",
+    "as_of_date": "2026-09-23"
+  },
+  "Illinois": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0495
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0495
+      }
+    ],
+    "single_standard_deduction": 2925,
+    "mfj_standard_deduction": 5850,
+    "single_deduction_basis": "exemption allowance $2,925",
+    "mfj_deduction_basis": "exemption allowance $2,925 x 2",
+    "source_md": "data/state-tax/IL.md",
+    "nfc_reference": "NFC-26-1784121339",
+    "as_of_date": "2026-07-16"
+  },
+  "Indiana": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0295
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0295
+      }
+    ],
+    "single_standard_deduction": 1000,
+    "mfj_standard_deduction": 2000,
+    "single_deduction_basis": "personal exemption $1,000",
+    "mfj_deduction_basis": "personal exemption $1,000 x 2",
+    "source_md": "data/state-tax/IN.md",
+    "nfc_reference": "NFC-26-1774379018",
+    "as_of_date": "2026-04-06"
+  },
+  "Iowa": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.038
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.038
+      }
+    ],
+    "single_standard_deduction": 16100,
+    "mfj_standard_deduction": 32200,
+    "single_deduction_basis": "standard deduction (single) $16,100",
+    "mfj_deduction_basis": "standard deduction (married filing jointly) $32,200",
+    "source_md": "data/state-tax/IA.md",
+    "nfc_reference": "NFC-23-1683113919",
+    "as_of_date": "2023-04-12",
+    "override_note": "Iowa has taxed wages at a flat 3.8% since January 1, 2025, with a standard deduction of $16,100 single and $32,200 joint. NFC has not republished its formula, which still lists the graduated rates 4.40%, 4.82%, 5.70% and 6.00% and deductions of $13,850 and $27,700."
+  },
+  "Kansas": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 3605,
+        "rate": 0.052
+      },
+      {
+        "floor": 26605,
+        "rate": 0.0558
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 8240,
+        "rate": 0.052
+      },
+      {
+        "floor": 54240,
+        "rate": 0.0558
+      }
+    ],
+    "single_standard_deduction": 9160,
+    "mfj_standard_deduction": 18320,
+    "single_deduction_basis": "personal allowance (single, 1 exemption) $9,160",
+    "mfj_deduction_basis": "personal allowance (married, 2 exemptions) $18,320",
+    "source_md": "data/state-tax/KS.md",
+    "nfc_reference": "NFC-24-1722617728",
+    "as_of_date": "2024-08-30"
+  },
+  "Kentucky": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.035
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.035
+      }
+    ],
+    "single_standard_deduction": 3360,
+    "mfj_standard_deduction": 3360,
+    "single_deduction_basis": "standard deduction $3,360",
+    "mfj_deduction_basis": "standard deduction $3,360",
+    "source_md": "data/state-tax/KY.md",
+    "nfc_reference": "NFC-26-1770145550",
+    "as_of_date": "2026-03-03"
+  },
+  "Louisiana": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0309
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0309
+      }
+    ],
+    "single_standard_deduction": 12875,
+    "mfj_standard_deduction": 25750,
+    "single_deduction_basis": "standard deduction (single) $12,875",
+    "mfj_deduction_basis": "standard deduction (married, two claimed) $25,750",
+    "source_md": "data/state-tax/LA.md",
+    "nfc_reference": "NFC-26-1767639939",
+    "as_of_date": "2026-09-04"
+  },
+  "Maine": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.058
+      },
+      {
+        "floor": 27400,
+        "rate": 0.0675
+      },
+      {
+        "floor": 64850,
+        "rate": 0.0715
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.0915
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.058
+      },
+      {
+        "floor": 54850,
+        "rate": 0.0675
+      },
+      {
+        "floor": 129750,
+        "rate": 0.0715
+      },
+      {
+        "floor": 1500000,
+        "rate": 0.0915
+      }
+    ],
+    "single_standard_deduction": 5300,
+    "mfj_standard_deduction": 10600,
+    "single_deduction_basis": "exemption $5,300",
+    "mfj_deduction_basis": "exemption $5,300 x 2",
+    "source_md": "data/state-tax/ME.md",
+    "nfc_reference": "NFC-26-1787745725",
+    "as_of_date": "2026-09-23"
+  },
+  "Maryland": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0475
+      },
+      {
+        "floor": 100000,
+        "rate": 0.05
+      },
+      {
+        "floor": 125000,
+        "rate": 0.0525
+      },
+      {
+        "floor": 150000,
+        "rate": 0.055
+      },
+      {
+        "floor": 250000,
+        "rate": 0.0575
+      },
+      {
+        "floor": 500000,
+        "rate": 0.0625
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.065
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0475
+      },
+      {
+        "floor": 150000,
+        "rate": 0.05
+      },
+      {
+        "floor": 175000,
+        "rate": 0.0525
+      },
+      {
+        "floor": 225000,
+        "rate": 0.055
+      },
+      {
+        "floor": 300000,
+        "rate": 0.0575
+      },
+      {
+        "floor": 600000,
+        "rate": 0.0625
+      },
+      {
+        "floor": 1200000,
+        "rate": 0.065
+      }
+    ],
+    "single_standard_deduction": 6600,
+    "mfj_standard_deduction": 9800,
+    "single_deduction_basis": "standard deduction $3,400 + exemption $3,200",
+    "mfj_deduction_basis": "standard deduction $3,400 + exemption $3,200 x 2",
+    "source_md": "data/state-tax/MD.md",
+    "nfc_reference": "NFC-26-1783003892",
+    "as_of_date": "2026-07-16"
+  },
+  "Massachusetts": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.05
+      },
+      {
+        "floor": 1107750,
+        "rate": 0.09
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.05
+      },
+      {
+        "floor": 1107750,
+        "rate": 0.09
+      }
+    ],
+    "single_standard_deduction": 4400,
+    "mfj_standard_deduction": 5400,
+    "single_deduction_basis": "exemption (one exemption) $4,400",
+    "mfj_deduction_basis": "exemption amount per exemption $1,000 x 2 + additional exemption amount $3,400",
+    "source_md": "data/state-tax/MA.md",
+    "nfc_reference": "NFC-26-1769797447",
+    "as_of_date": "2026-06-09"
+  },
+  "Michigan": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0425
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0425
+      }
+    ],
+    "single_standard_deduction": 5900,
+    "mfj_standard_deduction": 11800,
+    "single_deduction_basis": "exemption allowance $5,900",
+    "mfj_deduction_basis": "exemption allowance $5,900 x 2",
+    "source_md": "data/state-tax/MI.md",
+    "nfc_reference": "NFC-26-1781704387",
+    "as_of_date": "2026-07-15"
+  },
+  "Minnesota": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 4700,
+        "rate": 0.0535
+      },
+      {
+        "floor": 38010,
+        "rate": 0.068
+      },
+      {
+        "floor": 114130,
+        "rate": 0.0785
+      },
+      {
+        "floor": 207850,
+        "rate": 0.0985
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 14700,
+        "rate": 0.0535
+      },
+      {
+        "floor": 63400,
+        "rate": 0.068
+      },
+      {
+        "floor": 208180,
+        "rate": 0.0785
+      },
+      {
+        "floor": 352630,
+        "rate": 0.0985
+      }
+    ],
+    "single_standard_deduction": 5300,
+    "mfj_standard_deduction": 10600,
+    "single_deduction_basis": "allowance $5,300",
+    "mfj_deduction_basis": "allowance $5,300 x 2",
+    "source_md": "data/state-tax/MN.md",
+    "nfc_reference": "NFC-26-1782924992",
+    "as_of_date": "2026-07-17"
+  },
+  "Mississippi": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 10000,
+        "rate": 0.04
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 10000,
+        "rate": 0.04
+      }
+    ],
+    "single_standard_deduction": 8300,
+    "mfj_standard_deduction": 16600,
+    "single_deduction_basis": "standard deduction $2,300 + standard personal exemption $6,000",
+    "mfj_deduction_basis": "standard deduction $4,600 + standard personal exemption $12,000",
+    "source_md": "data/state-tax/MS.md",
+    "nfc_reference": "NFC-26-1768327516",
+    "as_of_date": "2026-06-09"
+  },
+  "Missouri": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 1348,
+        "rate": 0.02
+      },
+      {
+        "floor": 2696,
+        "rate": 0.025
+      },
+      {
+        "floor": 4044,
+        "rate": 0.03
+      },
+      {
+        "floor": 5392,
+        "rate": 0.035
+      },
+      {
+        "floor": 6740,
+        "rate": 0.04
+      },
+      {
+        "floor": 8088,
+        "rate": 0.045
+      },
+      {
+        "floor": 9436,
+        "rate": 0.047
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 1348,
+        "rate": 0.02
+      },
+      {
+        "floor": 2696,
+        "rate": 0.025
+      },
+      {
+        "floor": 4044,
+        "rate": 0.03
+      },
+      {
+        "floor": 5392,
+        "rate": 0.035
+      },
+      {
+        "floor": 6740,
+        "rate": 0.04
+      },
+      {
+        "floor": 8088,
+        "rate": 0.045
+      },
+      {
+        "floor": 9436,
+        "rate": 0.047
+      }
+    ],
+    "single_standard_deduction": 16100,
+    "mfj_standard_deduction": 32200,
+    "single_deduction_basis": "standard deduction $16,100",
+    "mfj_deduction_basis": "standard deduction (spouse does not work) $32,200",
+    "source_md": "data/state-tax/MO.md",
+    "nfc_reference": "NFC-26-1773783048",
+    "as_of_date": "2026-05-14"
+  },
+  "Montana": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 16100,
+        "rate": 0.047
+      },
+      {
+        "floor": 63600,
+        "rate": 0.0565
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 32200,
+        "rate": 0.047
+      },
+      {
+        "floor": 127200,
+        "rate": 0.0565
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/MT.md",
+    "nfc_reference": "NFC-26-1767632355",
+    "as_of_date": "2026-03-27"
+  },
+  "Nebraska": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 3430,
+        "rate": 0.0226
+      },
+      {
+        "floor": 6710,
+        "rate": 0.0322
+      },
+      {
+        "floor": 21810,
+        "rate": 0.0421
+      },
+      {
+        "floor": 31610,
+        "rate": 0.0435
+      },
+      {
+        "floor": 40130,
+        "rate": 0.0448
+      },
+      {
+        "floor": 75370,
+        "rate": 0.046
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 8190,
+        "rate": 0.0226
+      },
+      {
+        "floor": 13010,
+        "rate": 0.0322
+      },
+      {
+        "floor": 32400,
+        "rate": 0.0421
+      },
+      {
+        "floor": 50400,
+        "rate": 0.0435
+      },
+      {
+        "floor": 62530,
+        "rate": 0.0448
+      },
+      {
+        "floor": 82920,
+        "rate": 0.046
+      }
+    ],
+    "single_standard_deduction": 2440,
+    "mfj_standard_deduction": 4880,
+    "single_deduction_basis": "allowance $2,440",
+    "mfj_deduction_basis": "allowance $2,440 x 2",
+    "source_md": "data/state-tax/NE.md",
+    "nfc_reference": "NFC-26-1774374744",
+    "as_of_date": "2026-03-25"
+  },
+  "New Jersey": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.015
+      },
+      {
+        "floor": 20000,
+        "rate": 0.02
+      },
+      {
+        "floor": 35000,
+        "rate": 0.039
+      },
+      {
+        "floor": 40000,
+        "rate": 0.061
+      },
+      {
+        "floor": 75000,
+        "rate": 0.07
+      },
+      {
+        "floor": 500000,
+        "rate": 0.099
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.118
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.015
+      },
+      {
+        "floor": 20000,
+        "rate": 0.02
+      },
+      {
+        "floor": 50000,
+        "rate": 0.027
+      },
+      {
+        "floor": 70000,
+        "rate": 0.039
+      },
+      {
+        "floor": 80000,
+        "rate": 0.061
+      },
+      {
+        "floor": 150000,
+        "rate": 0.07
+      },
+      {
+        "floor": 500000,
+        "rate": 0.099
+      },
+      {
+        "floor": 1000000,
+        "rate": 0.118
+      }
+    ],
+    "single_standard_deduction": 1000,
+    "mfj_standard_deduction": 2000,
+    "single_deduction_basis": "exemption allowance $1,000",
+    "mfj_deduction_basis": "exemption allowance $1,000 x 2",
+    "source_md": "data/state-tax/NJ.md",
+    "nfc_reference": "NFC-21-1615324548",
+    "as_of_date": "2021-03-09"
+  },
+  "New Mexico": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 8050,
+        "rate": 0.015
+      },
+      {
+        "floor": 13550,
+        "rate": 0.032
+      },
+      {
+        "floor": 20550,
+        "rate": 0.032
+      },
+      {
+        "floor": 24550,
+        "rate": 0.043
+      },
+      {
+        "floor": 33550,
+        "rate": 0.043
+      },
+      {
+        "floor": 41550,
+        "rate": 0.047
+      },
+      {
+        "floor": 58550,
+        "rate": 0.047
+      },
+      {
+        "floor": 74550,
+        "rate": 0.049
+      },
+      {
+        "floor": 218050,
+        "rate": 0.059
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 16100,
+        "rate": 0.015
+      },
+      {
+        "floor": 24100,
+        "rate": 0.032
+      },
+      {
+        "floor": 32100,
+        "rate": 0.032
+      },
+      {
+        "floor": 41100,
+        "rate": 0.043
+      },
+      {
+        "floor": 57100,
+        "rate": 0.043
+      },
+      {
+        "floor": 66100,
+        "rate": 0.047
+      },
+      {
+        "floor": 102100,
+        "rate": 0.047
+      },
+      {
+        "floor": 116100,
+        "rate": 0.049
+      },
+      {
+        "floor": 331100,
+        "rate": 0.059
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/NM.md",
+    "nfc_reference": "NFC-26-1776874663",
+    "as_of_date": "2026-06-25"
+  },
+  "New York": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.039
+      },
+      {
+        "floor": 8500,
+        "rate": 0.044
+      },
+      {
+        "floor": 11700,
+        "rate": 0.0515
+      },
+      {
+        "floor": 13900,
+        "rate": 0.054
+      },
+      {
+        "floor": 80650,
+        "rate": 0.059
+      },
+      {
+        "floor": 96800,
+        "rate": 0.0703
+      },
+      {
+        "floor": 107650,
+        "rate": 0.0753
+      },
+      {
+        "floor": 157650,
+        "rate": 0.064
+      },
+      {
+        "floor": 215400,
+        "rate": 0.1144
+      },
+      {
+        "floor": 265400,
+        "rate": 0.0735
+      },
+      {
+        "floor": 1077549.99,
+        "rate": 0.1045
+      },
+      {
+        "floor": 4999999.99,
+        "rate": 0.111
+      },
+      {
+        "floor": 24999999.99,
+        "rate": 0.117
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.039
+      },
+      {
+        "floor": 8500,
+        "rate": 0.044
+      },
+      {
+        "floor": 11700,
+        "rate": 0.0515
+      },
+      {
+        "floor": 13900,
+        "rate": 0.054
+      },
+      {
+        "floor": 80650,
+        "rate": 0.059
+      },
+      {
+        "floor": 96800,
+        "rate": 0.0657
+      },
+      {
+        "floor": 107650,
+        "rate": 0.0707
+      },
+      {
+        "floor": 157650,
+        "rate": 0.0801
+      },
+      {
+        "floor": 211550,
+        "rate": 0.064
+      },
+      {
+        "floor": 323200,
+        "rate": 0.1349
+      },
+      {
+        "floor": 373200,
+        "rate": 0.0735
+      },
+      {
+        "floor": 1077550,
+        "rate": 0.0765
+      },
+      {
+        "floor": 2155349.99,
+        "rate": 0.1045
+      },
+      {
+        "floor": 4999999.99,
+        "rate": 0.111
+      },
+      {
+        "floor": 24999999.99,
+        "rate": 0.117
+      }
+    ],
+    "single_standard_deduction": 8400,
+    "mfj_standard_deduction": 9950,
+    "single_deduction_basis": "standard deduction $7,400 + allowance $1,000",
+    "mfj_deduction_basis": "standard deduction $7,950 + allowance $1,000 x 2",
+    "source_md": "data/state-tax/NY.md",
+    "nfc_reference": "NFC-26-1772477134",
+    "as_of_date": "2026-03-05"
+  },
+  "North Carolina": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0409
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0409
+      }
+    ],
+    "single_standard_deduction": 15250,
+    "mfj_standard_deduction": 17750,
+    "single_deduction_basis": "standard deduction $12,750 + allowance $2,500",
+    "mfj_deduction_basis": "standard deduction $12,750 + allowance $2,500 x 2",
+    "source_md": "data/state-tax/NC.md",
+    "nfc_reference": "NFC-26-1767633224",
+    "as_of_date": "2026-06-02"
+  },
+  "North Dakota": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 57625,
+        "rate": 0.0195
+      },
+      {
+        "floor": 258450,
+        "rate": 0.025
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 57500,
+        "rate": 0.0195
+      },
+      {
+        "floor": 168525,
+        "rate": 0.025
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/ND.md",
+    "nfc_reference": "NFC-26-1767646699",
+    "as_of_date": "2026-08-05"
+  },
+  "Ohio": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.016
+      },
+      {
+        "floor": 26050,
+        "rate": 0.0299
+      },
+      {
+        "floor": 100000,
+        "rate": 0.034
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.016
+      },
+      {
+        "floor": 26050,
+        "rate": 0.0299
+      },
+      {
+        "floor": 100000,
+        "rate": 0.034
+      }
+    ],
+    "single_standard_deduction": 650,
+    "mfj_standard_deduction": 1300,
+    "single_deduction_basis": "exemption allowance $650",
+    "mfj_deduction_basis": "exemption allowance $650 x 2",
+    "source_md": "data/state-tax/OH.md",
+    "nfc_reference": "NFC-26-1786990318",
+    "as_of_date": "2026-09-23"
+  },
+  "Oklahoma": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 10100,
+        "rate": 0.025
+      },
+      {
+        "floor": 11250,
+        "rate": 0.035
+      },
+      {
+        "floor": 13550,
+        "rate": 0.045
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 20200,
+        "rate": 0.025
+      },
+      {
+        "floor": 22500,
+        "rate": 0.035
+      },
+      {
+        "floor": 27100,
+        "rate": 0.045
+      }
+    ],
+    "single_standard_deduction": 1000,
+    "mfj_standard_deduction": 2000,
+    "single_deduction_basis": "exemption allowance $1,000",
+    "mfj_deduction_basis": "exemption allowance $1,000 x 2",
+    "source_md": "data/state-tax/OK.md",
+    "nfc_reference": "NFC-26-1773324603",
+    "as_of_date": "2026-03-13"
+  },
+  "Oregon": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.059474
+      },
+      {
+        "floor": 11400,
+        "rate": 0.0875
+      },
+      {
+        "floor": 125000,
+        "rate": 0.099
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.059518
+      },
+      {
+        "floor": 22800,
+        "rate": 0.0875
+      },
+      {
+        "floor": 250000,
+        "rate": 0.099
+      }
+    ],
+    "single_standard_deduction": 2910,
+    "mfj_standard_deduction": 5820,
+    "single_deduction_basis": "standard deduction (single, under 3 exemptions) $2,910",
+    "mfj_deduction_basis": "standard deduction (married) $5,820",
+    "source_md": "data/state-tax/OR.md",
+    "nfc_reference": "NFC-26-1778117419",
+    "as_of_date": "2026-09-11"
+  },
+  "Pennsylvania": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0307
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0307
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/PA.md",
+    "nfc_reference": "NFC-04-1077909242",
+    "as_of_date": ""
+  },
+  "Rhode Island": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0375
+      },
+      {
+        "floor": 82050,
+        "rate": 0.0475
+      },
+      {
+        "floor": 186450,
+        "rate": 0.0599
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0375
+      },
+      {
+        "floor": 82050,
+        "rate": 0.0475
+      },
+      {
+        "floor": 186450,
+        "rate": 0.0599
+      }
+    ],
+    "single_standard_deduction": 1000,
+    "mfj_standard_deduction": 2000,
+    "single_deduction_basis": "exemption amount $1,000",
+    "mfj_deduction_basis": "exemption amount $1,000 x 2",
+    "source_md": "data/state-tax/RI.md",
+    "nfc_reference": "NFC-26-1772030778",
+    "as_of_date": "2026-03-09"
+  },
+  "South Carolina": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 3640,
+        "rate": 0.03
+      },
+      {
+        "floor": 18230,
+        "rate": 0.06
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 3640,
+        "rate": 0.03
+      },
+      {
+        "floor": 18230,
+        "rate": 0.06
+      }
+    ],
+    "single_standard_deduction": 12500,
+    "mfj_standard_deduction": 17500,
+    "single_deduction_basis": "standard deduction (capped amount) $7,500 + personal exemption $5,000",
+    "mfj_deduction_basis": "standard deduction (capped amount) $7,500 + personal exemption $5,000 x 2",
+    "source_md": "data/state-tax/SC.md",
+    "nfc_reference": "NFC-26-1773173131",
+    "as_of_date": "2026-03-10"
+  },
+  "Utah": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0445
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0445
+      }
+    ],
+    "single_standard_deduction": 0,
+    "mfj_standard_deduction": 0,
+    "single_deduction_basis": "none",
+    "mfj_deduction_basis": "none",
+    "source_md": "data/state-tax/UT.md",
+    "nfc_reference": "NFC-26-1782763921",
+    "as_of_date": "2026-07-06"
+  },
+  "Vermont": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 3925,
+        "rate": 0.0335
+      },
+      {
+        "floor": 54675,
+        "rate": 0.066
+      },
+      {
+        "floor": 126775,
+        "rate": 0.076
+      },
+      {
+        "floor": 260225,
+        "rate": 0.0875
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0
+      },
+      {
+        "floor": 11775,
+        "rate": 0.0335
+      },
+      {
+        "floor": 96475,
+        "rate": 0.066
+      },
+      {
+        "floor": 216525,
+        "rate": 0.076
+      },
+      {
+        "floor": 323825,
+        "rate": 0.0875
+      }
+    ],
+    "single_standard_deduction": 5400,
+    "mfj_standard_deduction": 10800,
+    "single_deduction_basis": "allowance $5,400",
+    "mfj_deduction_basis": "allowance $5,400 x 2",
+    "source_md": "data/state-tax/VT.md",
+    "nfc_reference": "NFC-26-1780320782",
+    "as_of_date": "2026-06-09"
+  },
+  "Virginia": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      },
+      {
+        "floor": 3000,
+        "rate": 0.03
+      },
+      {
+        "floor": 5000,
+        "rate": 0.05
+      },
+      {
+        "floor": 17000,
+        "rate": 0.0575
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.02
+      },
+      {
+        "floor": 3000,
+        "rate": 0.03
+      },
+      {
+        "floor": 5000,
+        "rate": 0.05
+      },
+      {
+        "floor": 17000,
+        "rate": 0.0575
+      }
+    ],
+    "single_standard_deduction": 9680,
+    "mfj_standard_deduction": 10610,
+    "single_deduction_basis": "standard deduction $8,750 + exemption $930",
+    "mfj_deduction_basis": "standard deduction $8,750 + exemption $930 x 2",
+    "source_md": "data/state-tax/VA.md",
+    "nfc_reference": "NFC-25-1750694986",
+    "as_of_date": "2025-07-31"
+  },
+  "West Virginia": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0211
+      },
+      {
+        "floor": 10000,
+        "rate": 0.0281
+      },
+      {
+        "floor": 25000,
+        "rate": 0.0316
+      },
+      {
+        "floor": 40000,
+        "rate": 0.0422
+      },
+      {
+        "floor": 60000,
+        "rate": 0.0458
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0211
+      },
+      {
+        "floor": 10000,
+        "rate": 0.0281
+      },
+      {
+        "floor": 25000,
+        "rate": 0.0316
+      },
+      {
+        "floor": 40000,
+        "rate": 0.0422
+      },
+      {
+        "floor": 60000,
+        "rate": 0.0458
+      }
+    ],
+    "single_standard_deduction": 2000,
+    "mfj_standard_deduction": 4000,
+    "single_deduction_basis": "exemption allowance $2,000",
+    "mfj_deduction_basis": "exemption allowance $2,000 x 2",
+    "source_md": "data/state-tax/WV.md",
+    "nfc_reference": "NFC-26-1786455448",
+    "as_of_date": "2026-08-11"
+  },
+  "Wisconsin": {
+    "no_tax": false,
+    "single": [
+      {
+        "floor": 0,
+        "rate": 0.0354
+      },
+      {
+        "floor": 12760,
+        "rate": 0.0465
+      },
+      {
+        "floor": 25520,
+        "rate": 0.053
+      },
+      {
+        "floor": 280950,
+        "rate": 0.0765
+      }
+    ],
+    "married_filing_jointly": [
+      {
+        "floor": 0,
+        "rate": 0.0354
+      },
+      {
+        "floor": 12760,
+        "rate": 0.0465
+      },
+      {
+        "floor": 25520,
+        "rate": 0.053
+      },
+      {
+        "floor": 280950,
+        "rate": 0.0765
+      }
+    ],
+    "single_standard_deduction": 400,
+    "mfj_standard_deduction": 800,
+    "single_deduction_basis": "exemption allowance $400",
+    "mfj_deduction_basis": "exemption allowance $400 x 2",
+    "source_md": "data/state-tax/WI.md",
+    "nfc_reference": "NFC-22-1646766842",
+    "as_of_date": "2022-03-08"
+  }
+}
