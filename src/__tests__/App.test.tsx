@@ -58,3 +58,34 @@ describe('App — Export Data button', () => {
     expect(downloadedFilename).toMatch(/^rent-vs-buy-export-\d{4}-\d{2}-\d{2}\.xlsx$/)
   })
 })
+
+describe('App — rapid slider changes on a browser that rate-limits history.replaceState', () => {
+  // Mobile Safari throws a SecurityError after 100 replaceState calls in 30 seconds. Dragging a
+  // slider used to trigger one call per step, and the thrown error unmounted the whole page.
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('keeps the page on screen through 200 slider steps, and ends on the last value', () => {
+    let calls = 0
+    vi.spyOn(history, 'replaceState').mockImplementation(() => {
+      calls++
+      if (calls > 100) throw new DOMException('rate limited', 'SecurityError')
+    })
+    render(<App />)
+    const slider = screen.getByLabelText('Analysis horizon in years')
+    expect(() => {
+      for (let i = 0; i < 200; i++) {
+        fireEvent.change(slider, { target: { value: String(1 + (i % 40)) } })
+      }
+      vi.advanceTimersByTime(1000)
+    }).not.toThrow()
+    expect(screen.getByRole('main')).toBeInTheDocument()
+    expect((slider as HTMLInputElement).value).toBe(String(1 + (199 % 40)))
+    expect(calls).toBeLessThan(5)
+  })
+})

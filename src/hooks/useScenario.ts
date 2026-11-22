@@ -8,7 +8,7 @@ import type {
   TaxInput,
 } from '../engine'
 import { DEFAULT_INPUT } from '../lib/defaults'
-import { encode, decode } from '../lib/url-state'
+import { decode, writeStateToUrl } from '../lib/url-state'
 import { estimateStateIncomeTax } from '../lib/state-tax'
 import { computeScenarioForDisplay } from '../lib/inflation'
 
@@ -55,6 +55,10 @@ function initState(): ScenarioState {
   return { input: DEFAULT_INPUT, result: computeScenarioForDisplay(DEFAULT_INPUT), urlError: false }
 }
 
+// A slider drag changes the input on every step. Writing the URL on each one hits the browsers'
+// replaceState rate limit, so the write waits until the changes stop.
+export const URL_SYNC_DELAY_MS = 250
+
 export function useScenario() {
   const [state, setState] = useState<ScenarioState>(initState)
   const didMount = useRef(false)
@@ -64,7 +68,8 @@ export function useScenario() {
       didMount.current = true
       return
     }
-    history.replaceState(null, '', `?s=${encode(state.input)}`)
+    const timer = setTimeout(() => writeStateToUrl(state.input), URL_SYNC_DELAY_MS)
+    return () => clearTimeout(timer)
   }, [state.input])
 
   const updateOwnership = useCallback((patch: Partial<OwnershipInput>) => {
