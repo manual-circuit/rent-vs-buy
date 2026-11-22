@@ -1,0 +1,48 @@
+# Cross-check the calculator's statutory state schedules against ITEP's published top rates and
+# our NFC schedules each quarter (January, April, July and October: after the legislative
+# sessions and index updates). Opens an issue only when there is a new difference to
+# investigate or a known difference to remove. See scripts/cross-check-sources.ts.
+name: Cross-check state tax sources
+
+on:
+  schedule:
+    - cron: '41 14 15 1,4,7,10 *' # 14:41 UTC on the 15th of Jan, Apr, Jul, Oct
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  crosscheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Download the ITEP workbook
+        run: |
+          page=$(curl -fsSL https://itep.org/historical-state-tax-rate-data/)
+          url=$(printf '%s' "$page" | grep -o 'https://itep.org/wp-content/uploads/[^"]*State-Tax-Rate-Historical-Data[^"]*\.xlsx' | head -1)
+          if [ -z "$url" ]; then echo "No ITEP workbook link found on the page"; exit 1; fi
+          curl -fsSL -o "$RUNNER_TEMP/itep.xlsx" "$url"
+
+      - name: Read ITEP top rates (standard library only)
+        run: python3 scripts/itep_top_rates.py "$RUNNER_TEMP/itep.xlsx" > "$RUNNER_TEMP/itep.json"
+
+      - name: Cross-check
+        id: check
+        continue-on-error: true
+        run: node --experimental-strip-types scripts/cross-check-sources.ts --itep "$RUNNER_TEMP/itep.json" --out "$RUNNER_TEMP/report.md"
+
+      - name: Open an issue if sources disagree
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "State tax source cross-check: $(date -u +%Y-%m-%d)" \
+            --body-file "$RUNNER_TEMP/report.md"
