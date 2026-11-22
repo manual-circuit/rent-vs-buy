@@ -1,6 +1,7 @@
 // State income tax schedules, transcribed by hand from the USDA National Finance Center (NFC)
-// withholding bulletins in data/state-tax/*.md. These bulletins are the calculator's only source
-// of state brackets; scripts/build-nfc-brackets.ts turns this file into state-brackets-nfc.json.
+// withholding bulletins in data/state-tax/*.md. This is the calculator's 'nfc' source (the
+// default is the statutory schedules; see state-tax.ts). scripts/build-nfc-brackets.ts turns
+// this file into state-brackets-nfc.json.
 //
 // A spec is a transcription, not a parse: NFC publishes payroll formulas whose shape differs by
 // state (flat rates, "base plus rate" tables, rate-minus-adjustment tables, deductions that shrink

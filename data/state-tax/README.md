@@ -23,30 +23,59 @@ Read these before using them:
 - Do not edit these files by hand; the next refresh overwrites them.
 ## How the calculator uses these files
 
-These bulletins are the calculator's only source of state income tax brackets.
+The calculator has two selectable sources of state brackets (`estimateStateIncomeTax`'s
+`source` argument):
 
-- `src/lib/nfc-state-specs.ts` holds one hand-written spec per state (deductions, bracket
-  floors and rates), transcribed from the bulletin. A transcription is needed because NFC's
-  formulas differ by state: flat rates, "base plus rate" tables, rate-minus-adjustment tables,
-  and deductions that shrink with income.
-- `node scripts/build-nfc-brackets.ts` generates `src/lib/state-brackets-nfc.json` from the
-  specs and `manifest.json`. Each entry records its source file, NFC reference number and the
-  bulletin's published date. The nine states with no wage income tax have no bulletin and are
-  listed in `src/lib/state-tax.ts`.
-- `pnpm test` checks that every deduction, floor and rate in a spec is printed in that
-  state's bulletin, and that the JSON matches the specs. A refresh that changes a bulletin
-  therefore fails the tests until the spec is updated.
+- **`statutory` (default):** the statutory rate schedules and standard deductions in the Tax
+  Foundation workbook (`reference/income-tax-brackets/`, parsed by
+  `scripts/parse-state-brackets.ts` into `src/lib/state-brackets.json`), plus the corrections in
+  `src/lib/state-corrections.ts`. Each correction names the state or NFC publication it was
+  checked against, and a test fails once a refreshed workbook catches up with it.
+- **`nfc`:** these bulletins. They are payroll withholding formulas, which can differ from the
+  statute on purpose (Louisiana's 3.09% cushion, Arizona's 2.0% default election, California's
+  rates scaled by 1.1, default W-4 allowances), so they are not the default.
 
-The modeling rules (single and joint filers, deductions but no credits, one exemption per
+For `nfc`, `src/lib/nfc-state-specs.ts` holds one hand-written spec per state (deductions,
+bracket floors and rates), because NFC's formulas differ by state: flat rates, "base plus
+rate" tables, rate-minus-adjustment tables, and deductions that shrink with income.
+`node scripts/build-nfc-brackets.ts` generates `src/lib/state-brackets-nfc.json` from the specs
+and `manifest.json`; each entry records its source file, NFC reference number and the
+bulletin's published date. `pnpm test` checks that every deduction, floor and rate in a spec is
+printed in that state's bulletin, and that the JSON matches the specs, so a refresh that
+changes a bulletin fails the tests until the spec is updated.
+
+The NFC modeling rules (single and joint filers, deductions but no credits, one exemption per
 taxpayer and none for dependents, top-income-band values where a deduction phases out) are
 listed at the top of `nfc-state-specs.ts`. Some bulletins are years old (Pennsylvania 2004,
-Delaware 2020); check `as_of_date` before treating a schedule as current law. Where NFC has not
-republished after a law change, the spec carries a documented `override` (Iowa's flat 3.8%
-rate since 2025); a test fails once NFC prints something different, so the override gets removed. The payroll
-steps (TSP, FEHB, annualization) do not carry over into the calculator.
+Delaware 2020); check `as_of_date` before treating a schedule as current law. Where NFC has
+not republished after a law change, the spec carries a documented `override` (Iowa's flat 3.8%
+rate since 2025); a test fails once NFC prints something different, so the override gets
+removed. The nine states with no wage income tax have no bulletin and are listed in
+`src/lib/state-tax.ts`.
 
 This folder is tracked in git and committed by the refresh workflow (it lives in `data/`,
 not `reference/`, because `reference/` is gitignored).
+
+## Cross-checking the sources
+
+The calculator's statutory schedules are checked against independent sources so a law change
+nobody has noticed shows up as a difference:
+
+- `node scripts/cross-check-sources.ts [--itep itep.json] [--out report.md]` compares our final
+  statutory schedule with ITEP's published 2026 top rates and with our NFC schedules, and
+  exits 1 when something new disagrees or an explained difference has gone away.
+- ITEP's workbook (https://itep.org/historical-state-tax-rate-data/) is read with
+  `python3 scripts/itep_top_rates.py FILE.xlsx > itep.json`, which uses only the Python
+  standard library, so a downloaded file never reaches the spreadsheet library with known
+  parser advisories.
+- Explained differences live in `KNOWN_DIFFERENCES` (`src/lib/source-crosscheck.ts`), each with
+  its reason. `pnpm test` fails if an NFC entry stops being true or a new NFC difference
+  appears, so the list cannot drift.
+- `.github/workflows/source-crosscheck.yml` runs the ITEP check each January, April, July and
+  October and opens an issue only when something needs a person.
+
+A new difference is resolved against the state's own publication, then fixed in
+`state-corrections.ts` (with its evidence) or added to `KNOWN_DIFFERENCES` (with its reason).
 
 ## Refresh
 
