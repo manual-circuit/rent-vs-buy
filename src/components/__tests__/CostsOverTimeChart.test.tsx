@@ -1,27 +1,44 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import React, { isValidElement, type ReactNode } from 'react'
-import { Legend, XAxis } from 'recharts'
+import { CartesianGrid, Legend, XAxis, YAxis } from 'recharts'
 import { CostsOverTimeChart } from '../CostsOverTimeChart'
 import { computeScenario } from '../../engine'
 import { DEFAULT_INPUT } from '../../lib/defaults'
 import { deflate } from '../../lib/inflation'
-import { computeXAxisInterval } from '../../lib/format'
+import { yearTicks } from '../../lib/chart-axes'
 
 type ChartPoint = { year: number; owner: number; renter: number }
+type ChartMargin = { top: number; right: number; bottom: number; left: number }
 type LegendFormatter = (value: string) => string
 let capturedChartData: ChartPoint[] = []
 let capturedChildren: ReactNode
+let capturedMargin: ChartMargin | undefined
+let capturedContainerHeight: unknown
 
 vi.mock('recharts', async () => {
   const actual = await vi.importActual<typeof import('recharts')>('recharts')
   return {
     ...actual,
-    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="responsive-container">{children}</div>
-    ),
-    LineChart: (props: { data: ChartPoint[]; children: ReactNode } & Record<string, unknown>) => {
+    ResponsiveContainer: ({
+      children,
+      height,
+    }: {
+      children: React.ReactNode
+      height?: unknown
+    }) => {
+      capturedContainerHeight = height
+      return <div data-testid="responsive-container">{children}</div>
+    },
+    LineChart: (
+      props: {
+        data: ChartPoint[]
+        margin?: ChartMargin
+        children: ReactNode
+      } & Record<string, unknown>,
+    ) => {
       capturedChartData = props.data
+      capturedMargin = props.margin
       capturedChildren = props.children
       const ActualLineChart = actual.LineChart
       return <ActualLineChart {...props} />
@@ -37,12 +54,27 @@ function findLegendFormatter(children: ReactNode): LegendFormatter | undefined {
   return (match.props as { formatter: LegendFormatter }).formatter
 }
 
-function findXAxisInterval(children: ReactNode): number | undefined {
+function findChildProps(children: ReactNode, type: unknown): Record<string, unknown> | undefined {
   const match = React.Children.toArray(children).find(
-    (child) => isValidElement(child) && child.type === XAxis,
+    (child) => isValidElement(child) && child.type === type,
   )
   if (!match || !isValidElement(match)) return undefined
-  return (match.props as { interval: number }).interval
+  return match.props as Record<string, unknown>
+}
+
+function yAxisLabels(children: ReactNode): string[] {
+  const props = findChildProps(children, YAxis) as {
+    ticks: number[]
+    tickFormatter: (v: number) => string
+  }
+  return props.ticks.map(props.tickFormatter)
+}
+
+function resultForHorizon(horizon: number) {
+  return computeScenario({
+    ...DEFAULT_INPUT,
+    shared: { ...DEFAULT_INPUT.shared, horizon_years: horizon },
+  })
 }
 
 describe('CostsOverTimeChart', () => {
@@ -100,24 +132,71 @@ describe('CostsOverTimeChart', () => {
     expect(formatter?.('renter')).toBe('Renting')
   })
 
-  it('shows every year on a short horizon (interval 0)', () => {
-    const result = computeScenario({
-      ...DEFAULT_INPUT,
-      shared: { ...DEFAULT_INPUT.shared, horizon_years: 10 },
-    })
-    render(<CostsOverTimeChart result={result} />)
-    expect(findXAxisInterval(capturedChildren)).toBe(computeXAxisInterval(10))
-    expect(findXAxisInterval(capturedChildren)).toBe(0)
+  it.each([1, 10, 23, 30, 40])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
+    render(<CostsOverTimeChart result={resultForHorizon(horizon)} />)
+    const xAxis = findChildProps(capturedChildren, XAxis)
+    expect(xAxis?.ticks).toEqual(yearTicks(horizon))
+    expect(xAxis?.type).toBe('number')
+    expect(xAxis?.interval).toBeUndefined()
   })
 
-  it('thins the x-axis on a 40-year horizon', () => {
-    const result = computeScenario({
-      ...DEFAULT_INPUT,
-      shared: { ...DEFAULT_INPUT.shared, horizon_years: 40 },
-    })
-    render(<CostsOverTimeChart result={result} />)
-    expect(findXAxisInterval(capturedChildren)).toBe(computeXAxisInterval(40))
-    expect(findXAxisInterval(capturedChildren)).toBeGreaterThan(0)
+  it.each([
+    [10, ['$0', '$20K', '$40K', '$60K']],
+    [30, ['$0', '$50K', '$100K']],
+    [40, ['$0', '$50K', '$100K', '$150K']],
+  ])('y-axis labels at horizon %i (DEFAULT_INPUT) share one unit', (horizon, expected) => {
+    render(<CostsOverTimeChart result={resultForHorizon(horizon)} />)
+    expect(yAxisLabels(capturedChildren)).toEqual(expected)
+  })
+
+  it('y-axis domain covers every plotted value', () => {
+    render(<CostsOverTimeChart result={resultForHorizon(30)} />)
+    const [lo, hi] = (findChildProps(capturedChildren, YAxis) as { domain: [number, number] })
+      .domain
+    for (const p of capturedChartData) {
+      expect(p.owner).toBeGreaterThanOrEqual(lo)
+      expect(p.owner).toBeLessThanOrEqual(hi)
+      expect(p.renter).toBeGreaterThanOrEqual(lo)
+      expect(p.renter).toBeLessThanOrEqual(hi)
+    }
+  })
+
+  it('y-axis follows the real-dollars setting', () => {
+    const nominal = resultForHorizon(30)
+    const real = {
+      ...nominal,
+      inputs: {
+        ...nominal.inputs,
+        shared: { ...nominal.inputs.shared, real_dollars: true, inflation_rate: 0.03 },
+      },
+    }
+    render(<CostsOverTimeChart result={nominal} />)
+    const nominalTop = (findChildProps(capturedChildren, YAxis) as { domain: [number, number] })
+      .domain[1]
+    render(<CostsOverTimeChart result={real} />)
+    const realTop = (findChildProps(capturedChildren, YAxis) as { domain: [number, number] })
+      .domain[1]
+    expect(realTop).toBeLessThan(nominalTop)
+  })
+
+  it('removes the vertical grid lines and the x-axis title', () => {
+    render(<CostsOverTimeChart result={resultForHorizon(10)} />)
+    expect(findChildProps(capturedChildren, CartesianGrid)?.vertical).toBe(false)
+    expect(findChildProps(capturedChildren, XAxis)?.label).toBeUndefined()
+  })
+
+  it('legend is 12px with a 10px icon', () => {
+    render(<CostsOverTimeChart result={resultForHorizon(10)} />)
+    const legend = findChildProps(capturedChildren, Legend)
+    expect(legend?.wrapperStyle).toEqual({ fontSize: 12 })
+    expect(legend?.iconSize).toBe(10)
+  })
+
+  it('uses tight margins and a responsive height (256px mobile, 320px from sm)', () => {
+    const { container } = render(<CostsOverTimeChart result={resultForHorizon(10)} />)
+    expect(capturedMargin).toEqual({ top: 8, right: 8, bottom: 8, left: 0 })
+    expect(capturedContainerHeight).toBe('100%')
+    expect(container.querySelector('.h-64.sm\\:h-80')).not.toBeNull()
   })
 
   it('S17-26: a refinance scenario is reflected in the chart with zero code changes to this component — year 1 unaffected, later years reflect the new rate', () => {

@@ -10,7 +10,8 @@ import {
   ReferenceLine,
 } from 'recharts'
 import type { ScenarioResult, SharedInput } from '../engine'
-import { formatCurrency, formatCurrencyCompact, computeXAxisInterval } from '../lib/format'
+import { formatCurrency } from '../lib/format'
+import { currencyAxisProps, yearAxisProps } from '../lib/chart-axes'
 import { deflateIfEnabled } from '../lib/inflation'
 import { HorizonSlider } from './HorizonSlider'
 
@@ -44,60 +45,56 @@ export function NetWorthChartBody({ result }: NetWorthChartBodyProps) {
       role="img"
       aria-label={`Net worth over time chart over ${result.inputs.shared.horizon_years} years.${crossoverYear !== null ? ` Buying and renting lines cross at year ${crossoverYear}.` : ' No break-even within the analysis period.'}`}
     >
-      <ResponsiveContainer width="100%" height={320}>
-        <LineChart data={chartData} margin={{ top: 28, right: 16, bottom: 8, left: 16 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E2DDD6" />
-          <XAxis
-            dataKey="year"
-            type="category"
-            interval={computeXAxisInterval(chartData.length)}
-            label={{ value: 'Year', position: 'insideBottom', offset: -4 }}
-            tick={{ fill: '#8C8884', fontSize: 12 }}
-          />
-          <YAxis
-            tickFormatter={formatCurrencyCompact}
-            width={72}
-            tick={{ fill: '#8C8884', fontSize: 12 }}
-          />
-          <ChartTooltip
-            formatter={(value: number, name: string) => [
-              formatCurrency(value),
-              name === 'owner' ? 'Buying' : 'Renting',
-            ]}
-            labelFormatter={(label: number) => `Year ${label}`}
-            contentStyle={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2DDD6',
-              color: '#1A1A18',
-            }}
-          />
-          <Legend formatter={(value: string) => (value === 'owner' ? 'Buying' : 'Renting')} />
-          {crossoverYear !== null && (
-            <ReferenceLine
-              x={crossoverYear}
-              stroke="#4A7C59"
-              strokeDasharray="4 4"
-              label={{ value: 'Break-even', position: 'top', fontSize: 11, fill: '#4A7C59' }}
+      <div className="h-64 sm:h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 28, right: 8, bottom: 8, left: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E2DDD6" vertical={false} />
+            <XAxis dataKey="year" {...yearAxisProps(result.inputs.shared.horizon_years)} />
+            <YAxis {...currencyAxisProps(chartData.flatMap((p) => [p.owner, p.renter]))} />
+            <ChartTooltip
+              formatter={(value: number, name: string) => [
+                formatCurrency(value),
+                name === 'owner' ? 'Buying' : 'Renting',
+              ]}
+              labelFormatter={(label: number) => `Year ${label}`}
+              contentStyle={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #E2DDD6',
+                color: '#1A1A18',
+              }}
             />
-          )}
-          <Line
-            type="monotone"
-            dataKey="owner"
-            stroke="#3B6EA5"
-            strokeWidth={2}
-            dot={false}
-            name="owner"
-          />
-          <Line
-            type="monotone"
-            dataKey="renter"
-            stroke="#7A6E5F"
-            strokeWidth={2}
-            dot={false}
-            name="renter"
-          />
-        </LineChart>
-      </ResponsiveContainer>
+            <Legend
+              formatter={(value: string) => (value === 'owner' ? 'Buying' : 'Renting')}
+              wrapperStyle={{ fontSize: 12 }}
+              iconSize={10}
+            />
+            {crossoverYear !== null && (
+              <ReferenceLine
+                x={crossoverYear}
+                stroke="#4A7C59"
+                strokeDasharray="4 4"
+                label={{ value: 'Break-even', position: 'top', fontSize: 11, fill: '#4A7C59' }}
+              />
+            )}
+            <Line
+              type="monotone"
+              dataKey="owner"
+              stroke="#3B6EA5"
+              strokeWidth={2}
+              dot={false}
+              name="owner"
+            />
+            <Line
+              type="monotone"
+              dataKey="renter"
+              stroke="#7A6E5F"
+              strokeWidth={2}
+              dot={false}
+              name="renter"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

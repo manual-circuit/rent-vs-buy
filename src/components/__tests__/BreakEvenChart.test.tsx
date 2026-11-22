@@ -1,26 +1,34 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import React, { isValidElement, type ReactNode } from 'react'
-import { XAxis } from 'recharts'
+import { CartesianGrid, Legend, ReferenceLine, XAxis, YAxis } from 'recharts'
 import { BreakEvenChart } from '../BreakEvenChart'
 import { computeScenario } from '../../engine'
 import { DEFAULT_INPUT } from '../../lib/defaults'
 import { deflate } from '../../lib/inflation'
-import { computeXAxisInterval } from '../../lib/format'
+import { yearTicks } from '../../lib/chart-axes'
 
 type ChartPoint = { year: number; owner: number; renter: number }
 type ChartMargin = { top: number; right: number; bottom: number; left: number }
 let capturedChartData: ChartPoint[] = []
 let capturedMargin: ChartMargin | undefined
 let capturedChildren: ReactNode
+let capturedContainerHeight: unknown
 
 vi.mock('recharts', async () => {
   const actual = await vi.importActual<typeof import('recharts')>('recharts')
   return {
     ...actual,
-    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="responsive-container">{children}</div>
-    ),
+    ResponsiveContainer: ({
+      children,
+      height,
+    }: {
+      children: React.ReactNode
+      height?: unknown
+    }) => {
+      capturedContainerHeight = height
+      return <div data-testid="responsive-container">{children}</div>
+    },
     LineChart: (
       props: {
         data: ChartPoint[]
@@ -37,12 +45,27 @@ vi.mock('recharts', async () => {
   }
 })
 
-function findXAxisInterval(children: ReactNode): number | undefined {
+function findChildProps(children: ReactNode, type: unknown): Record<string, unknown> | undefined {
   const match = React.Children.toArray(children).find(
-    (child) => isValidElement(child) && child.type === XAxis,
+    (child) => isValidElement(child) && child.type === type,
   )
   if (!match || !isValidElement(match)) return undefined
-  return (match.props as { interval: number }).interval
+  return match.props as Record<string, unknown>
+}
+
+function yAxisLabels(children: ReactNode): string[] {
+  const props = findChildProps(children, YAxis) as {
+    ticks: number[]
+    tickFormatter: (v: number) => string
+  }
+  return props.ticks.map(props.tickFormatter)
+}
+
+function resultForHorizon(horizon: number) {
+  return computeScenario({
+    ...DEFAULT_INPUT,
+    shared: { ...DEFAULT_INPUT.shared, horizon_years: horizon },
+  })
 }
 
 beforeEach(() => {
@@ -149,24 +172,75 @@ describe('BreakEvenChart', () => {
     )
   })
 
-  it('shows every year on a short horizon (interval 0)', () => {
-    const result = computeScenario({
-      ...DEFAULT_INPUT,
-      shared: { ...DEFAULT_INPUT.shared, horizon_years: 10 },
-    })
-    const updateShared = vi.fn()
-    render(<BreakEvenChart result={result} updateShared={updateShared} />)
-    expect(findXAxisInterval(capturedChildren)).toBe(0)
+  it.each([1, 10, 23, 30, 40])('x-axis ticks equal yearTicks(%i) on a numeric axis', (horizon) => {
+    render(<BreakEvenChart result={resultForHorizon(horizon)} updateShared={vi.fn()} />)
+    const xAxis = findChildProps(capturedChildren, XAxis)
+    expect(xAxis?.ticks).toEqual(yearTicks(horizon))
+    expect(xAxis?.type).toBe('number')
+    expect(xAxis?.interval).toBeUndefined()
   })
 
-  it('thins the x-axis on a 40-year horizon', () => {
+  it.each([
+    [10, ['$0', '$200K', '$400K', '$600K']],
+    [30, ['$0', '$0.5M', '$1.0M', '$1.5M', '$2.0M']],
+    [40, ['$0', '$1M', '$2M', '$3M', '$4M']],
+  ])('y-axis labels at horizon %i (DEFAULT_INPUT) share one unit', (horizon, expected) => {
+    render(<BreakEvenChart result={resultForHorizon(horizon)} updateShared={vi.fn()} />)
+    expect(yAxisLabels(capturedChildren)).toEqual(expected)
+  })
+
+  it('y-axis domain covers every plotted value, including negative net worth', () => {
     const result = computeScenario({
       ...DEFAULT_INPUT,
-      shared: { ...DEFAULT_INPUT.shared, horizon_years: 40 },
+      shared: { ...DEFAULT_INPUT.shared, horizon_years: 5 },
     })
-    const updateShared = vi.fn()
-    render(<BreakEvenChart result={result} updateShared={updateShared} />)
-    expect(findXAxisInterval(capturedChildren)).toBe(computeXAxisInterval(40))
-    expect(findXAxisInterval(capturedChildren)).toBeGreaterThan(0)
+    render(<BreakEvenChart result={result} updateShared={vi.fn()} />)
+    const [lo, hi] = (findChildProps(capturedChildren, YAxis) as { domain: [number, number] })
+      .domain
+    for (const p of capturedChartData) {
+      expect(p.owner).toBeGreaterThanOrEqual(lo)
+      expect(p.owner).toBeLessThanOrEqual(hi)
+      expect(p.renter).toBeGreaterThanOrEqual(lo)
+      expect(p.renter).toBeLessThanOrEqual(hi)
+    }
+  })
+
+  it('removes the vertical grid lines and the x-axis title', () => {
+    render(<BreakEvenChart result={resultForHorizon(10)} updateShared={vi.fn()} />)
+    expect(findChildProps(capturedChildren, CartesianGrid)?.vertical).toBe(false)
+    expect(findChildProps(capturedChildren, XAxis)?.label).toBeUndefined()
+  })
+
+  it('legend is 12px with a 10px icon', () => {
+    render(<BreakEvenChart result={resultForHorizon(10)} updateShared={vi.fn()} />)
+    const legend = findChildProps(capturedChildren, Legend)
+    expect(legend?.wrapperStyle).toEqual({ fontSize: 12 })
+    expect(legend?.iconSize).toBe(10)
+  })
+
+  it('keeps top 28 but tightens left/right margins and uses a responsive height', () => {
+    const { container } = render(
+      <BreakEvenChart result={resultForHorizon(10)} updateShared={vi.fn()} />,
+    )
+    expect(capturedMargin).toEqual({ top: 28, right: 8, bottom: 8, left: 0 })
+    expect(capturedContainerHeight).toBe('100%')
+    expect(container.querySelector('.h-64.sm\\:h-80')).not.toBeNull()
+  })
+
+  it('break-even reference line sits on a year inside the numeric x-domain', () => {
+    // DEFAULT_INPUT never crosses; this price/rate/rent combination flips at year 17 of 30.
+    const crossing = computeScenario({
+      ...DEFAULT_INPUT,
+      ownership: { ...DEFAULT_INPUT.ownership, purchase_price: 800000, interest_rate: 7.5 },
+      rental: { ...DEFAULT_INPUT.rental, base_rent_monthly: 1800 },
+      shared: { ...DEFAULT_INPUT.shared, horizon_years: 30 },
+    })
+    render(<BreakEvenChart result={crossing} updateShared={vi.fn()} />)
+    const ref = findChildProps(capturedChildren, ReferenceLine)
+    expect(ref).toBeDefined()
+    expect(ref?.x).toBe(17)
+    const domain = (findChildProps(capturedChildren, XAxis) as { domain: [number, number] }).domain
+    expect(ref?.x as number).toBeGreaterThanOrEqual(domain[0])
+    expect(ref?.x as number).toBeLessThanOrEqual(domain[1])
   })
 })
