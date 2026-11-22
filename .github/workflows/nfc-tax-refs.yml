@@ -1,0 +1,47 @@
+# Refresh state withholding references from USDA NFC twice a year.
+# Feb 1 catches January-effective changes; Oct 1 catches the mid-year wave
+# (2026 bulletins landed July through September). Opens a PR only when
+# something changed; a run that fails emails the repo owner.
+name: Refresh NFC state tax references
+
+on:
+  schedule:
+    - cron: '23 14 1 2,10 *' # 14:23 UTC on Feb 1 and Oct 1
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      OUT: data/state-tax
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Extract and compare
+        run: python scripts/nfc_tax_refs.py --out "$OUT" --summary "$RUNNER_TEMP/summary.md"
+
+      - name: Open pull request if references changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain -- "$OUT")" ]; then
+            echo "No changes."; exit 0
+          fi
+          day=$(date -u +%Y-%m-%d)
+          branch="nfc-tax-refs/$day"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add "$OUT"
+          git commit -m "Refresh NFC state tax references ($day)"
+          git push -u origin "$branch"
+          gh pr create --title "NFC state tax references: $day" \
+            --body-file "$RUNNER_TEMP/summary.md"
