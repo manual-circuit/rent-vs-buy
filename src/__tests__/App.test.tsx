@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import App from '../App'
 import { DEFAULT_INPUT } from '../lib/defaults'
+import { REFERENCES } from '../lib/references'
 
 beforeEach(() => {
   Object.defineProperty(window, 'location', { value: { search: '' }, writable: true })
@@ -121,5 +122,88 @@ describe('App — horizon cap', () => {
       '30',
     )
     expect(screen.getByDisplayValue('725000')).toBeInTheDocument()
+  })
+})
+
+describe('App — References button', () => {
+  it('renders beside Export Data in one row: stacked on phones, two columns from sm up', () => {
+    render(<App />)
+    const exportBtn = screen.getByRole('button', { name: 'Export Data' })
+    const refsBtn = screen.getByRole('button', { name: 'References' })
+    expect(exportBtn.parentElement).toBe(refsBtn.parentElement)
+    const row = exportBtn.parentElement as HTMLElement
+    expect(row.className).toContain('grid-cols-1')
+    expect(row.className).toContain('sm:grid-cols-2')
+  })
+
+  it('both buttons carry identical sizing classes so they stay equal', () => {
+    render(<App />)
+    const exportBtn = screen.getByRole('button', { name: 'Export Data' })
+    const refsBtn = screen.getByRole('button', { name: 'References' })
+    expect(refsBtn.className).toBe(exportBtn.className)
+    expect(refsBtn.className).toContain('w-full')
+  })
+
+  it('starts closed', () => {
+    render(<App />)
+    const refsBtn = screen.getByRole('button', { name: 'References' })
+    expect(refsBtn).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByRole('region', { name: 'References' })).toBeNull()
+  })
+
+  it('opens a panel directly under the row, and closes again on a second click', () => {
+    render(<App />)
+    const refsBtn = screen.getByRole('button', { name: 'References' })
+    fireEvent.click(refsBtn)
+    expect(refsBtn).toHaveAttribute('aria-expanded', 'true')
+    const panel = screen.getByRole('region', { name: 'References' })
+    expect(refsBtn).toHaveAttribute('aria-controls', panel.id)
+    const row = refsBtn.parentElement as HTMLElement
+    expect(row.nextElementSibling).toBe(panel)
+    fireEvent.click(refsBtn)
+    expect(refsBtn).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByRole('region', { name: 'References' })).toBeNull()
+  })
+
+  it('Escape closes the panel and returns focus to the button', () => {
+    render(<App />)
+    const refsBtn = screen.getByRole('button', { name: 'References' })
+    fireEvent.click(refsBtn)
+    const firstLink = screen.getAllByRole('link', { name: /Revenue Procedure/ })[0] as HTMLElement
+    firstLink.focus()
+    fireEvent.keyDown(firstLink, { key: 'Escape' })
+    expect(screen.queryByRole('region', { name: 'References' })).toBeNull()
+    expect(refsBtn).toHaveFocus()
+  })
+
+  it('shows every source as a link that opens safely in a new tab', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'References' }))
+    const panel = screen.getByRole('region', { name: 'References' })
+    const links = panel.querySelectorAll('a')
+    expect(links.length).toBe(REFERENCES.length)
+    for (const a of links) {
+      expect(a.getAttribute('href')).toMatch(/^https:\/\//)
+      expect(a.getAttribute('target')).toBe('_blank')
+      expect(a.getAttribute('rel')).toBe('noopener noreferrer')
+    }
+  })
+
+  it('groups the sources under their headings', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'References' }))
+    for (const g of ['Federal tax', 'State income tax', 'Cross-checks']) {
+      expect(screen.getByRole('heading', { name: g })).toBeInTheDocument()
+    }
+  })
+
+  it('does not disturb Export Data', () => {
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url')
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'References' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Export Data' }))
+    expect(clickSpy).toHaveBeenCalledTimes(1)
   })
 })

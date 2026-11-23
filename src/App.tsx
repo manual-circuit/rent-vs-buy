@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import { useScenario } from './hooks/useScenario'
 import { BasicInputs } from './components/BasicInputs'
 import { AdvancedInputs } from './components/AdvancedInputs'
@@ -7,8 +8,12 @@ import { CostTable } from './components/CostTable'
 import { InputSection } from './components/InputSection'
 import { ChartTabs } from './components/ChartTabs'
 import { SensitivityStrip } from './components/SensitivityStrip'
+import { ReferencesPanel } from './components/ReferencesPanel'
 import { buildWorkbook } from './lib/xlsx-export'
 
+const REFERENCES_PANEL_ID = 'references-panel'
+
+// Shared by the Export Data and References buttons so the two always match.
 const exportBtnClass =
   'w-full rounded-lg border border-surface-rule bg-surface-panel px-4 py-2 text-center text-sm font-medium text-ink-primary hover:bg-surface-base focus:outline-none focus:ring-1 focus:ring-accent'
 
@@ -35,6 +40,9 @@ export default function App() {
     updateShared,
     updateTax,
   } = useScenario()
+
+  const [referencesOpen, setReferencesOpen] = useState(false)
+  const referencesButtonRef = useRef<HTMLButtonElement>(null)
 
   function handleExportClick() {
     const data = buildWorkbook(result)
@@ -110,10 +118,32 @@ export default function App() {
           {/* DebugPanel — hidden; sidelined until further notice */}
           {/* <DebugPanel result={result} /> */}
         </div>
-        <div className="mt-6">
-          <button type="button" onClick={handleExportClick} className={exportBtnClass}>
-            Export Data
-          </button>
+        <div
+          className="mt-6"
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' && referencesOpen) {
+              setReferencesOpen(false)
+              referencesButtonRef.current?.focus()
+            }
+          }}
+        >
+          {/* Stacked on phones, side by side from the sm breakpoint up. */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button type="button" onClick={handleExportClick} className={exportBtnClass}>
+              Export Data
+            </button>
+            <button
+              ref={referencesButtonRef}
+              type="button"
+              onClick={() => setReferencesOpen((open) => !open)}
+              aria-expanded={referencesOpen}
+              aria-controls={REFERENCES_PANEL_ID}
+              className={exportBtnClass}
+            >
+              References <span aria-hidden="true">{referencesOpen ? '▴' : '▾'}</span>
+            </button>
+          </div>
+          {referencesOpen && <ReferencesPanel id={REFERENCES_PANEL_ID} />}
         </div>
       </main>
     </>
